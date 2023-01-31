@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
+    "strict": true,
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "allowJs": true,

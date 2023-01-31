@@ -33,6 +33,7 @@ export default function makeModule() {
                 loader: 'babel-loader',
                 options: {
                     presets: [
+                        '@babel/preset-typescript',
                         ['@babel/env', {
                             targets: {
                                 node: process.versions.node
@@ -66,6 +67,7 @@ export default function makeModule() {
                     sourceMap: true,
                     modules: {
                         mode: 'local',
+                        localIdentName: '[local]_[hash:base64:5]',
                     },
                 }
             }, ...postcssAndSass]
