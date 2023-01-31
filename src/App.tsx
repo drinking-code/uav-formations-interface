@@ -1,4 +1,4 @@
-import {MainView} from './view/MainView'
+import {MainView} from './views/MainView'
 
 export default function App() {
     return <>

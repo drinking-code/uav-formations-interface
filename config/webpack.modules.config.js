@@ -24,7 +24,7 @@ const postcssAndSass = [{
     }
 },]
 
-export default function makeModule(noCss) {
+export default function makeModule() {
     return {
         rules: [{
             test: /\.[jt]sx?$/,
@@ -50,13 +50,9 @@ export default function makeModule(noCss) {
             exclude: /\.module\.s?[ac]ss$/i,
             use: [{
                 loader: MiniCssExtractPlugin.loader,
-                options: {
-                    emit: !noCss,
-                },
             }, {
                 loader: 'css-loader',
                 options: {
-                    importLoaders: 2,
                     sourceMap: true,
                 }
             }, ...postcssAndSass]
@@ -64,13 +60,9 @@ export default function makeModule(noCss) {
             test: /\.module\.s?[ac]ss$/i,
             use: [{
                 loader: MiniCssExtractPlugin.loader,
-                options: {
-                    emit: !noCss,
-                },
             }, {
                 loader: 'css-loader',
                 options: {
-                    importLoaders: 1,
                     sourceMap: true,
                     modules: {
                         mode: 'local',
