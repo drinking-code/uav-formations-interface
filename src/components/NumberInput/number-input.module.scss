@@ -9,6 +9,12 @@
 
   overflow: hidden;
 
+  transition: background-color .3s ease;
+
+  &.focus {
+    background: #555;
+  }
+
   .innerWrapper {
     width: $width;
     $weird-offset: 3%;
@@ -32,18 +38,21 @@
     width: calc(#{$width} - #{$button-width} * 2);
 
     text-align: center;
+    outline: none;
 
     z-index: 1;
   }
 
   $gradient: transparentize(white, .8), cubic-bezier(0, 0, .5, 1), transparent;
+  $text-position: .9rem;
 
   .button {
     position: relative;
     width: $button-width;
     height: 100%;
 
-    padding: 0;
+    padding: 0 0 0 #{$text-position};
+    text-align: left;
 
     cursor: pointer;
     opacity: .5;
@@ -85,6 +94,9 @@
   }
 
   .add.button {
+    padding: 0 #{$text-position} 0 0;
+    text-align: right;
+
     &:after {
       left: auto;
       right: 0;
