@@ -1,4 +1,5 @@
 import autoprefixer from 'autoprefixer'
+import easingGradients from 'postcss-easing-gradients'
 
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 
@@ -9,7 +10,10 @@ const postcssAndSass = [{
     options: {
         sourceMap: true,
         postcssOptions: {
-            plugins: [autoprefixer],
+            plugins: [
+                autoprefixer,
+                easingGradients
+            ],
         },
     }
 }, {

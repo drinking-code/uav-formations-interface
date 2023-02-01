@@ -7,8 +7,9 @@ export default function ThreeViewport(props: HTMLAttributes<HTMLElement>) {
     return <>
         <div {...props}>
             <Canvas>
-                <ambientLight/>
-                <pointLight position={[10, 10, 10]}/>
+                <ambientLight intensity={.3}/>
+                <pointLight position={[2, 4, 5]} intensity={2}/>
+                <pointLight position={[-2, -1, -1]} intensity={10}/>
                 <Box/>
             </Canvas>
         </div>
@@ -20,8 +21,10 @@ function Box(props: ThreeElements['mesh']) {
     const [hovered, hover] = useState(false)
     const [clicked, click] = useState(false)
     useFrame((state, delta) => {
-        ref.current.rotation.y += delta * .8
-        ref.current.rotation.x += delta
+        delta *= .5
+        ref.current.rotation.x += delta * .7
+        ref.current.rotation.y += delta
+        ref.current.rotation.z += delta * .6
     })
     return (
         <mesh
