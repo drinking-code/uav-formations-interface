@@ -8,7 +8,7 @@ import {cl} from '../../utils/class-names'
 export default function Sidebar(props: HTMLAttributes<HTMLElement>) {
     return <>
         <div {...props} className={cl(styles.sidebar, props.className)}>
-            <NumberInput/>
+            <NumberInput label={'Maximum Number of UAVs'} noUnits/>
         </div>
     </>
 }

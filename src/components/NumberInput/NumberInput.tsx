@@ -1,24 +1,30 @@
 import {FocusEvent, HTMLAttributes, KeyboardEvent, useEffect, useRef, useState} from 'react'
 import {CSSTransition} from 'react-transition-group'
 import RoundDiv from 'react-round-div'
-import {evaluate, Unit} from 'mathjs'
+import {evaluate, number, Unit} from 'mathjs'
 import convert from 'convert'
+
+import {kebabCase} from '../../utils/string-manipulation'
 
 import styles from './number-input.module.scss'
 import errorStyles from './error.module.scss'
 import {cl} from '../../utils/class-names'
 
 type NumberInputPropsType = {
-    defaultValue?: number | string,
+    defaultValue?: number | string
     step?: number
+    label?: string
+    noUnits?: boolean
 } & HTMLAttributes<HTMLElement>
 
 const defaultUnit = 'cm'
 
-export default function NumberInput({defaultValue = 0, step = .1, ...props}: NumberInputPropsType) {
+export default function NumberInput(
+    {defaultValue = 0, step = .1, label, noUnits, ...props}: NumberInputPropsType
+) {
     const innerWrapper = useRef(null)
     const input = useRef(null)
-    const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue.toString()))
+    const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
     const [showInputError, setShowInputError] = useState<boolean>(false)
 
@@ -37,17 +43,19 @@ export default function NumberInput({defaultValue = 0, step = .1, ...props}: Num
 
     function blur(e: FocusEvent<HTMLInputElement>) {
         (innerWrapper.current as HTMLElement | null)?.parentElement?.classList.remove(styles.focus)
-        e.target.value = convertInputValue(e.target.value)
+        e.target.value = convertInputValue(e.target.value).toString()
     }
 
     function roundToPlace(value: number, place: number): number {
         return Math.round(value * 10 ** place) / 10 ** place
     }
 
-    function convertInputValue(value: string): string {
+    function convertInputValue(value: number | string): number | string {
         try {
+            value = value.toString()
             const result = evaluate(value)
             if (result.constructor.name === 'Unit') {
+                if (noUnits) throw new Error('Input does not support units')
                 const resultJson = result.toJSON()
                 if (resultJson.value === 0)
                     return '0' + defaultUnit
@@ -55,7 +63,11 @@ export default function NumberInput({defaultValue = 0, step = .1, ...props}: Num
                 conversion.quantity = roundToPlace(conversion.quantity as number, 6)
                 return conversion.quantity + conversion.unit
             } else {
-                return roundToPlace(Number(value), 6) + defaultUnit
+                const roundedNumber = roundToPlace(Number(result), 6)
+                if (noUnits)
+                    return roundedNumber
+                else
+                    return roundedNumber + defaultUnit
             }
         } catch (err) {
             setInputErrorMessage((err as Error).toString())
@@ -66,14 +78,16 @@ export default function NumberInput({defaultValue = 0, step = .1, ...props}: Num
     }
 
     function offsetValue(step: number, unit: string = defaultUnit) {
-        const newValue = convertInputValue((input.current as HTMLInputElement | null)?.value + `+(${step}${unit})`)
-        if (input.current) {
-            (input.current as HTMLInputElement).value = newValue
-        }
+        const inputElement = input.current as HTMLInputElement | null
+        if (!inputElement) return
+        const newValue = convertInputValue(inputElement.value + `+(${step}${noUnits ? '' : unit})`)
+        inputElement.value = newValue.toString()
     }
 
     return <>
-        <RoundDiv {...props} className={cl(props.className, styles.numberInput)}>
+        {label && <label className={styles.label}>{label}</label>}
+        <RoundDiv {...props} className={cl(props.className, styles.numberInput)}
+                  id={cl(props.id, label && kebabCase(label))}>
             <div className={styles.innerWrapper} ref={innerWrapper}>
                 <button className={cl(styles.button, styles.subtract)} onClick={() => offsetValue(-step)}>-</button>
                 <input className={cl(styles.input)} type={'text'} defaultValue={valueBeforeFocus}

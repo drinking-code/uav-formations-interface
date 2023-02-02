@@ -1,5 +1,15 @@
 @use 'variables' as v;
 
+.label {
+  display: block;
+  margin-bottom: .5em;
+  padding-left: calc(#{v.$border-radius} * 1 / 3);
+
+  font-size: 12px;
+  letter-spacing: .02em;
+  opacity: .6;
+}
+
 .numberInput {
   width: v.$width;
   height: v.$height;
@@ -46,13 +56,14 @@
 
   $gradient: transparentize(white, .8), cubic-bezier(0, 0, .5, 1), transparent;
   $text-position: .9rem;
+  $padding-bottom: .12rem;
 
   .button {
     position: relative;
     width: $button-width;
     height: 100%;
 
-    padding: 0 0 0 #{$text-position};
+    padding: 0 0 $padding-bottom $text-position;
     text-align: left;
 
     cursor: pointer;
@@ -95,7 +106,7 @@
   }
 
   .add.button {
-    padding: 0 #{$text-position} 0 0;
+    padding: 0 $text-position $padding-bottom 0;
     text-align: right;
 
     &:after {
