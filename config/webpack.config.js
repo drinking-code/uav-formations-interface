@@ -4,6 +4,7 @@ import TerserPlugin from 'terser-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CopyPlugin from 'copy-webpack-plugin'
+import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer'
 
 import makeModule from './webpack.modules.config.js'
 
@@ -17,10 +18,11 @@ export default {
     output: {
         filename: 'index.js',
         path: path.resolve('build'),
+        clean: true,
     },
     module: makeModule(),
     resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },
     optimization: {
         moduleIds: 'deterministic',
@@ -81,5 +83,6 @@ export default {
                 {from: 'src/index.html', to: '.'},
             ],
         }),
+        // new BundleAnalyzerPlugin()
     ],
 }
