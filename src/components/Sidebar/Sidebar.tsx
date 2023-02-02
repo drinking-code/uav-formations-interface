@@ -12,6 +12,8 @@ export default function Sidebar(props: HTMLAttributes<HTMLElement>) {
             <NumberInput label={str('input-labels.maxUAVAmount')} noUnits defaultValue={500}/>
             <NumberInput label={str('input-labels.UAVMinDistance')} defaultValue={'.1m'}/>
             <NumberInput label={str('input-labels.UAVSize')} defaultValue={'.25m'}/>
+
+            <NumberInput label={str('input-labels.sharpnessThreshold')} defaultValue={'30deg'}/>
         </div>
     </>
 }

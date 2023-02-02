@@ -24,9 +24,9 @@ export default function NumberInput(
 ) {
     const innerWrapper = useRef(null)
     const input = useRef(null)
-    const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
     const [showInputError, setShowInputError] = useState<boolean>(false)
+    const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
 
     function focus(e: FocusEvent<HTMLInputElement>) {
         setValueBeforeFocus((e.target as HTMLInputElement).value)
@@ -52,7 +52,7 @@ export default function NumberInput(
 
     function convertInputValue(value: number | string): number | string {
         try {
-            value = value.toString()
+            value = value.toString().replace(/°/, 'deg')
             const result = evaluate(value)
             if (result.constructor.name === 'Unit') {
                 if (noUnits) throw new Error('Input does not support units')
@@ -70,10 +70,16 @@ export default function NumberInput(
                     return roundedNumber + defaultUnit
             }
         } catch (err) {
-            setInputErrorMessage((err as Error).toString())
-            setShowInputError(true)
-            setTimeout(() => setShowInputError(false), 2 * 1000)
-            return valueBeforeFocus
+            try {
+                ;(valueBeforeFocus) // try accessing before setting states to prevent infinite loop
+                setInputErrorMessage((err as Error).toString())
+                setShowInputError(true)
+                setTimeout(() => setShowInputError(false), 2 * 1000)
+                return valueBeforeFocus // might not been initialised
+            } catch (e) {
+                console.error(err)
+                return '0'
+            }
         }
     }
 

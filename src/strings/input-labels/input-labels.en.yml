@@ -1,3 +1,5 @@
 maxUAVAmount: Maximum Number of UAVs
 UAVMinDistance: Distance Between UAVs
 UAVSize: UAV Size (Longest Diagonal)
+
+sharpnessThreshold: Sharpness Threshold
