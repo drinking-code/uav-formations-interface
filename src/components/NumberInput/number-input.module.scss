@@ -1,11 +1,12 @@
+@use 'variables' as v;
+
 .numberInput {
-  $width: 224px;
-  width: $width;
-  height: 2rem;
+  width: v.$width;
+  height: v.$height;
 
   background: #444;
   color: currentColor;
-  border-radius: .7rem;
+  border-radius: v.$border-radius;
 
   overflow: hidden;
 
@@ -16,7 +17,7 @@
   }
 
   .innerWrapper {
-    width: $width;
+    width: v.$width;
     $weird-offset: 3%;
     height: 100% + $weird-offset;
 
@@ -35,7 +36,7 @@
   $button-width: 3rem;
 
   .input {
-    width: calc(#{$width} - #{$button-width} * 2);
+    width: calc(#{v.$width} - #{$button-width} * 2);
 
     text-align: center;
     outline: none;

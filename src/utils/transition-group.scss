@@ -1,0 +1,23 @@
+@mixin in-out-transition($in-state-props, $out-state-props, $transition, $transition-out:0) {
+  &.enter {
+    @content($out-state-props);
+  }
+
+  &.enterActive {
+    @content($in-state-props);
+    transition: $transition;
+  }
+
+  &.exit {
+    @content($in-state-props);
+  }
+
+  &.exitActive {
+    @content($out-state-props);
+    @if ($transition-out != 0) {
+      transition: $transition-out;
+    } @else {
+      transition: $transition;
+    }
+  }
+}

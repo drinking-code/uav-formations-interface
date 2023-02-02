@@ -1,9 +1,11 @@
-import {FocusEvent, HTMLAttributes, KeyboardEvent, useRef, useState} from 'react'
+import {FocusEvent, HTMLAttributes, KeyboardEvent, useEffect, useRef, useState} from 'react'
+import {CSSTransition} from 'react-transition-group'
 import RoundDiv from 'react-round-div'
 import {evaluate, Unit} from 'mathjs'
 import convert from 'convert'
 
 import styles from './number-input.module.scss'
+import errorStyles from './error.module.scss'
 import {cl} from '../../utils/class-names'
 
 type NumberInputPropsType = {
@@ -17,6 +19,8 @@ export default function NumberInput({defaultValue = 0, step = .1, ...props}: Num
     const innerWrapper = useRef(null)
     const input = useRef(null)
     const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue.toString()))
+    const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
+    const [showInputError, setShowInputError] = useState<boolean>(false)
 
     function focus(e: FocusEvent<HTMLInputElement>) {
         setValueBeforeFocus((e.target as HTMLInputElement).value)
@@ -54,6 +58,9 @@ export default function NumberInput({defaultValue = 0, step = .1, ...props}: Num
                 return roundToPlace(Number(value), 6) + defaultUnit
             }
         } catch (err) {
+            setInputErrorMessage((err as Error).toString())
+            setShowInputError(true)
+            setTimeout(() => setShowInputError(false), 2 * 1000)
             return valueBeforeFocus
         }
     }
@@ -65,12 +72,18 @@ export default function NumberInput({defaultValue = 0, step = .1, ...props}: Num
         }
     }
 
-    return <RoundDiv {...props} className={cl(props.className, styles.numberInput)}>
-        <div className={styles.innerWrapper} ref={innerWrapper}>
-            <button className={cl(styles.button, styles.subtract)} onClick={() => offsetValue(-step)}>-</button>
-            <input className={cl(styles.input)} type={'text'} defaultValue={valueBeforeFocus}
-                   onFocus={focus} onBlur={blur} onKeyDown={blurOnEnter} ref={input}/>
-            <button className={cl(styles.button, styles.add)} onClick={() => offsetValue(step)}>+</button>
-        </div>
-    </RoundDiv>
+    return <>
+        <RoundDiv {...props} className={cl(props.className, styles.numberInput)}>
+            <div className={styles.innerWrapper} ref={innerWrapper}>
+                <button className={cl(styles.button, styles.subtract)} onClick={() => offsetValue(-step)}>-</button>
+                <input className={cl(styles.input)} type={'text'} defaultValue={valueBeforeFocus}
+                       onFocus={focus} onBlur={blur} onKeyDown={blurOnEnter} ref={input}/>
+                <button className={cl(styles.button, styles.add)} onClick={() => offsetValue(step)}>+</button>
+            </div>
+        </RoundDiv>
+        <CSSTransition in={showInputError} classNames={errorStyles} unmountOnExit
+                       addEndListener={(node, done) => node.addEventListener('transitionend', done, false)}>
+            <RoundDiv className={errorStyles.errorMessage}>{inputErrorMessage}</RoundDiv>
+        </CSSTransition>
+    </>
 }
