@@ -1,9 +1,11 @@
 import path from 'path'
 
+import webpack from 'webpack'
 import TerserPlugin from 'terser-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CopyPlugin from 'copy-webpack-plugin'
+import CompressionPlugin from 'compression-webpack-plugin'
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer'
 
 import makeModule from './webpack.modules.config.js'
@@ -74,6 +76,9 @@ export default {
             }),
         ],
     },
+    performance: {
+        hints: false,
+    },
     plugins: [
         new MiniCssExtractPlugin({
             filename: 'styles.css',
@@ -83,6 +88,11 @@ export default {
                 {from: 'src/index.html', to: '.'},
             ],
         }),
+        isProduction && new CompressionPlugin({
+            test: /\.(js|css)$/i,
+            deleteOriginalAssets: true
+        }),
+        isProduction && new webpack.ProgressPlugin()
         // new BundleAnalyzerPlugin()
     ],
 }
