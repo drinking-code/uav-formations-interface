@@ -76,6 +76,10 @@ export default function makeModule() {
                 }
             }, ...postcssAndSass]
         }, {
+            test: /\.ya?ml$/,
+            type: 'javascript/auto',
+            use: 'yaml-loader',
+        }, {
             test: /\.svg$/i,
             type: 'asset/inline',
         }, {
