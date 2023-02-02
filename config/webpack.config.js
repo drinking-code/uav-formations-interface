@@ -94,5 +94,5 @@ export default {
         }),
         isProduction && new webpack.ProgressPlugin()
         // new BundleAnalyzerPlugin()
-    ],
+    ].filter(v => v),
 }
