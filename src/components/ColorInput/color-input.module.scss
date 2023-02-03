@@ -1,0 +1,38 @@
+@use 'src/utils/input-variables' as v;
+
+.label {
+  @extend %label;
+}
+
+.colorInput {
+  width: v.$width;
+  height: v.$height;
+
+  margin-bottom: v.$ungrouped-margin;
+
+  background: v.$background;
+  border-radius: v.$border-radius;
+
+  overflow: hidden;
+
+  .innerWrapper {
+    width: v.$width;
+    height: v.$height;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .swatch {
+    $padding: 4px;
+    width: calc(#{v.$height} - #{$padding} * 2);
+    height: calc(#{v.$height} - #{$padding} * 2);
+
+    margin-left: $padding;
+    margin-right: .6rem;
+
+    border-radius: calc(#{v.$border-radius} - #{$padding});
+    background-color: var(--color);
+  }
+}

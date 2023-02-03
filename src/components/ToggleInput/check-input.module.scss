@@ -7,6 +7,8 @@
   $height: v.$height * $size-scaling;
   height: $height;
 
+  margin: calc((#{v.$ungrouped-margin-no-label} + #{v.$ungrouped-margin}) / 2) 0 v.$ungrouped-margin;
+
   display: flex;
   align-items: center;
 

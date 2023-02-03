@@ -23,11 +23,11 @@ export type NumberInputPropsType = {
 const defaultUnit = 'cm'
 
 export default function NumberInput(
-    {defaultValue = 0, step, label, name, noUnits, onInput, ...props}: NumberInputPropsType
+    {defaultValue = 0, step: stepOrUndefined, label, name, noUnits, onInput, ...props}: NumberInputPropsType
 ) {
     const isPercentage = typeof defaultValue === 'string' && defaultValue.endsWith('%')
     if (isPercentage) noUnits = true
-    step = step ?? (isPercentage ? .01 : .1)
+    const step = stepOrUndefined ?? (isPercentage ? .01 : .1)
     const innerWrapper = useRef(null)
     const input = useRef(null)
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)

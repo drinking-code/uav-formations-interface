@@ -3,6 +3,7 @@ import {HTMLAttributes, SyntheticEvent} from 'react'
 import {NumberInput} from '../NumberInput'
 import {MeshInput} from '../MeshInput'
 import {ToggleInput} from '../ToggleInput'
+import {ColorInput} from '../ColorInput'
 
 
 import styles from './sidebar.module.scss'
@@ -37,6 +38,19 @@ export default function Sidebar(props: HTMLAttributes<HTMLElement>) {
                          name={'features_only'} onInput={handleInputs}/>
             <NumberInput label={str('input-labels.surfaceFillAmount')} defaultValue={'50%'}
                          name={'file_brightness'} onInput={handleInputs}/>
+
+            <ToggleInput label={str('input-labels.illuminationDirectionality')} defaultValue={true}
+                         name={'illumination_directionality'} onInput={handleInputs}/>
+            <NumberInput label={str('input-labels.illuminationDirectionalityBleed')} defaultValue={'50%'}
+                         name={'illumination_directionality_bleed'} onInput={handleInputs}/>
+
+            <ToggleInput label={str('input-labels.colorOverride')} defaultValue={false}
+                         name={'override_color'} onInput={handleInputs}/>
+            <ToggleInput switchLabels={[
+                str('input-labels.solidColor'),
+                str('input-labels.gradientColor'),
+            ]} defaultValue={true} name={'color_mode'} onInput={handleInputs}/>
+            <ColorInput label={str('input-labels.color')} defaultValue={'white'}/>
         </div>
     </>
 }

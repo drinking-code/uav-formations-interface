@@ -11,3 +11,11 @@ sharpnessThreshold: Sharpness Threshold
 
 toggleSurfaceFill: Fill Surfaces
 surfaceFillAmount: Surface Fill Brightness
+
+illuminationDirectionality: Illumination Directionality
+illuminationDirectionalityBleed: Illumination Directionality Bleed
+
+colorOverride: Override Colour
+solidColor: Solid Colour
+gradientColor: Gradient
+color: Colour
