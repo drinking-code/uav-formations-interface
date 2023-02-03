@@ -6,3 +6,5 @@ UAVMinDistance: Distance Between UAVs
 UAVSize: UAV Size (Longest Diagonal)
 
 sharpnessThreshold: Sharpness Threshold
+
+toggleSurfaceFill: Fill Surfaces

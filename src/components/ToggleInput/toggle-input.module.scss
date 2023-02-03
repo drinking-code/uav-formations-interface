@@ -1,0 +1,40 @@
+@use 'sass:math';
+@use 'src/utils/input-variables' as v;
+
+.toggleInput {
+  $size-scaling: .8;
+  width: v.$width;
+  $height: v.$height * $size-scaling;
+  height: $height;
+
+  display: flex;
+  align-items: center;
+
+  cursor: pointer;
+
+  .checkbox, .checkboxWrapper {
+    height: $height;
+    width: $height;
+  }
+
+  .checkboxWrapper {
+    display: inline-block;
+    margin-right: .6rem;
+
+    border-radius: min(#{v.$border-radius}, #{$height} * 1 / 3);
+    overflow: hidden;
+  }
+
+  .checkbox {
+    appearance: none;
+    background: v.$background;
+
+    cursor: pointer;
+
+    &:checked {
+      $tick-size: 60%;
+      $tick-position-top: 58%;
+      background: url('../../icons/check.svg') center #{$tick-position-top} / #{$tick-size} no-repeat, v.$background-active;
+    }
+  }
+}

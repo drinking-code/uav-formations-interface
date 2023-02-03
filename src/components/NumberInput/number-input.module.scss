@@ -10,7 +10,7 @@
 
   margin-bottom: 1rem;
 
-  background: v.$background-active;
+  background: v.$background;
   color: currentColor;
   border-radius: v.$border-radius;
 
@@ -24,8 +24,7 @@
 
   .innerWrapper {
     width: v.$width;
-    $weird-offset: 3%;
-    height: 100% + $weird-offset;
+    height: v.$height;
 
     display: flex;
     justify-content: space-between;

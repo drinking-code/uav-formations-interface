@@ -6,11 +6,12 @@
 
 .meshInput {
   width: v.$width;
-  height: 2.5rem;
+  $height: 2.5rem;
+  height: $height;
 
   margin-bottom: 1rem;
 
-  background: v.$background-active;
+  background: v.$background;
   border-radius: v.$border-radius;
   font-size: 14px;
 
@@ -18,8 +19,7 @@
 
   .innerWrapper {
     width: v.$width;
-    $weird-offset: 3%;
-    height: 100% + $weird-offset;
+    height: $height;
 
     display: flex;
     justify-content: center;
@@ -30,6 +30,5 @@
     margin-right: .5rem;
 
     font-size: 1.2em;
-    filter: invert(1);
   }
 }
