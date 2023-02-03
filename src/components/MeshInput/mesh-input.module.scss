@@ -12,6 +12,9 @@
 
   background: v.$background-active;
   border-radius: v.$border-radius;
+  font-size: 14px;
+
+  cursor: pointer;
 
   .innerWrapper {
     width: v.$width;
@@ -26,7 +29,7 @@
   .icon {
     margin-right: .5rem;
 
-    font-size: 1.2rem;
+    font-size: 1.2em;
     filter: invert(1);
   }
 }

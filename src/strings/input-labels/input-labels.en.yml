@@ -1,5 +1,5 @@
 mesh: Mesh File (.stl, .obj, .ply)
-meshFile: Drop or Click to Select
+meshFile: Drop Here / Click to Select
 
 maxUAVAmount: Maximum Number of UAVs
 UAVMinDistance: Distance Between UAVs

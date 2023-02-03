@@ -1,4 +1,4 @@
-import {HTMLAttributes} from 'react'
+import {HTMLAttributes, useRef} from 'react'
 import RoundDiv from 'react-round-div'
 
 import {Icon} from '../Icon'
@@ -12,12 +12,20 @@ export type MeshInputPropsType = {
 } & HTMLAttributes<HTMLElement>
 
 export default function MeshInput({label, ...props}: MeshInputPropsType) {
+    const fileInput = useRef<HTMLInputElement | null>(null)
+
+    function openFilePrompt() {
+        fileInput.current?.click()
+    }
+
     return <>
         {label && <label className={styles.label}>{label}</label>}
-        <RoundDiv {...props} className={cl(props.className, styles.meshInput)}>
+        <RoundDiv {...props} className={cl(props.className, styles.meshInput)} onClick={openFilePrompt}>
             <div className={styles.innerWrapper}>
                 <Icon icon={'box'} className={styles.icon}/>
                 {str('input-labels.meshFile')}
+                <input type="file" accept="application/vnd.ms-pki.stl, .stl, .obj, .mtl, .ply" multiple
+                       hidden={true} ref={fileInput}/>
             </div>
         </RoundDiv>
     </>
