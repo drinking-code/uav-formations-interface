@@ -1,10 +1,11 @@
-import {FocusEvent, HTMLAttributes, KeyboardEvent, useRef, useState} from 'react'
+import {FocusEvent, HTMLAttributes, KeyboardEvent, SyntheticEvent, useRef, useState} from 'react'
 import {CSSTransition} from 'react-transition-group'
 import RoundDiv from 'react-round-div'
-import {evaluate, number, Unit} from 'mathjs'
-import convert from 'convert'
+import {evaluate, Unit} from 'mathjs'
+import convert, {convertMany} from 'convert'
 
 import {kebabCase} from '../../utils/string-manipulation'
+import {createFakeSyntheticEvent} from '../../utils/fake-synthetic-event'
 
 import styles from './number-input.module.scss'
 import errorStyles from './error.module.scss'
@@ -14,13 +15,15 @@ export type NumberInputPropsType = {
     defaultValue?: number | string
     step?: number
     label?: string
+    name?: string
     noUnits?: boolean
+    onInput?: (e: SyntheticEvent<null, CustomEvent>) => void
 } & HTMLAttributes<HTMLElement>
 
 const defaultUnit = 'cm'
 
 export default function NumberInput(
-    {defaultValue = 0, step = .1, label, noUnits, ...props}: NumberInputPropsType
+    {defaultValue = 0, step = .1, label, name, noUnits, onInput, ...props}: NumberInputPropsType
 ) {
     const innerWrapper = useRef(null)
     const input = useRef(null)
@@ -44,6 +47,7 @@ export default function NumberInput(
     function blur(e: FocusEvent<HTMLInputElement>) {
         (innerWrapper.current as HTMLElement | null)?.parentElement?.classList.remove(styles.focus)
         e.target.value = convertInputValue(e.target.value).toString()
+        fireOnInput()
     }
 
     function roundToPlace(value: number, place: number): number {
@@ -88,6 +92,24 @@ export default function NumberInput(
         if (!inputElement) return
         const newValue = convertInputValue(inputElement.value + `+(${step}${noUnits ? '' : unit})`)
         inputElement.value = newValue.toString()
+        fireOnInput()
+    }
+
+
+    function fireOnInput() {
+        if (!onInput) return
+        const inputElement = input.current as HTMLInputElement | null
+        if (!inputElement) return
+        const customInputEvent = new CustomEvent('input', {
+            detail: {
+                target: {
+                    name: name,
+                    value: noUnits ? Number(inputElement.value) : convertMany(inputElement.value).to('best')
+                }
+            }
+        })
+        const customSyntheticInputEvent = createFakeSyntheticEvent<any, typeof customInputEvent>(customInputEvent)
+        onInput(customSyntheticInputEvent)
     }
 
     return <>
@@ -97,7 +119,7 @@ export default function NumberInput(
             <div className={styles.innerWrapper} ref={innerWrapper}>
                 <button className={cl(styles.button, styles.subtract)} onClick={() => offsetValue(-step)}>-</button>
                 <input className={cl(styles.input)} type={'text'} defaultValue={valueBeforeFocus}
-                       onFocus={focus} onBlur={blur} onKeyDown={blurOnEnter} ref={input}/>
+                       onFocus={focus} onBlur={blur} onKeyDown={blurOnEnter} ref={input} name={name}/>
                 <button className={cl(styles.button, styles.add)} onClick={() => offsetValue(step)}>+</button>
             </div>
         </RoundDiv>
