@@ -1,11 +1,15 @@
-import {HTMLAttributes, ReactNode, SyntheticEvent, useState} from 'react'
+import {HTMLAttributes, SyntheticEvent, useState} from 'react'
 import RoundDiv from 'react-round-div'
 
-import styles from './toggle-input.module.scss'
+import {createFakeSyntheticEvent} from '../../utils/fake-synthetic-event'
+
+import switchStyles from './switch-input.module.scss'
+import checkStyles from './check-input.module.scss'
 import {cl} from '../../utils/class-names'
 
 type ToggleInputPropsBaseType = {
     defaultValue?: boolean
+    name?: string
     onInput?: (e: SyntheticEvent<null, CustomEvent>) => void
 }
 
@@ -24,24 +28,53 @@ export type ToggleInputPropsType =
     & Omit<HTMLAttributes<HTMLElement>, 'defaultValue'>
 
 export default function ToggleInput(
-    {defaultValue = false, label, switchLabels, onInput, ...props}: ToggleInputPropsType
+    {defaultValue = false, label, switchLabels, name, onInput, ...props}: ToggleInputPropsType
 ) {
-    const [checked, setChecked] = useState(defaultValue)
+    const [checked, setChecked] = useState<boolean>(defaultValue)
 
+    function setValue(newValue: typeof checked) {
+        setChecked(newValue)
+        fireOnInput(newValue)
+    }
+
+    function fireOnInput(newValue: typeof checked) {
+        if (!onInput) return
+        const customInputEvent = new CustomEvent('input', {
+            detail: {
+                target: {
+                    name: name,
+                    value: newValue
+                }
+            }
+        })
+        const customSyntheticInputEvent = createFakeSyntheticEvent<any, typeof customInputEvent>(customInputEvent)
+        onInput(customSyntheticInputEvent)
+    }
 
     if (switchLabels) {
         return <>
-            <input type={'radio'}/>
-            <input type={'radio'}/>
+            <fieldset className={switchStyles.wrapper}>
+                <RoundDiv className={cl(switchStyles.selector, checked && switchStyles.right)}/>
+                <label className={switchStyles.switchInput}>
+                    <input type={'radio'} checked={!checked} onChange={() => setValue(false)}
+                           className={switchStyles.radio}/>
+                    <span className={switchStyles.label}>{switchLabels[0]}</span>
+                </label>
+                <label className={switchStyles.switchInput}>
+                    <input type={'radio'} checked={checked} onChange={() => setValue(true)}
+                           className={switchStyles.radio}/>
+                    <span className={switchStyles.label}>{switchLabels[1]}</span>
+                </label>
+            </fieldset>
         </>
     } else {
         return <>
-            <label className={cl(styles.toggleInput)}>
-                <RoundDiv className={cl(styles.checkboxWrapper)}>
-                    <input type={'checkbox'} checked={checked} onChange={() => setChecked(!checked)}
-                           className={cl(styles.checkbox)}/>
+            <label className={checkStyles.checkInput}>
+                <RoundDiv className={checkStyles.checkboxWrapper}>
+                    <input type={'checkbox'} checked={checked} onChange={() => setValue(!checked)}
+                           className={checkStyles.checkbox}/>
                 </RoundDiv>
-                <span className={cl(styles.label)}>{label}</span>
+                <span className={checkStyles.label}>{label}</span>
             </label>
         </>
     }

@@ -8,7 +8,7 @@
   width: v.$width;
   height: v.$height;
 
-  margin-bottom: 1rem;
+  margin-bottom: v.$ungrouped-margin;
 
   background: v.$background;
   color: currentColor;

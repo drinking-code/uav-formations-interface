@@ -2,6 +2,8 @@ mesh: Mesh File (.stl, .obj, .ply)
 meshFile: Drop Here / Click to Select
 
 maxUAVAmount: Maximum Number of UAVs
+midpointDistanceMode: Btw. Midpoints
+cornerDistanceMode: Btw. Corners
 UAVMinDistance: Distance Between UAVs
 UAVSize: UAV Size (Longest Diagonal)
 

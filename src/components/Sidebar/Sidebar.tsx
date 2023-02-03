@@ -21,6 +21,10 @@ export default function Sidebar(props: HTMLAttributes<HTMLElement>) {
 
             <NumberInput label={str('input-labels.maxUAVAmount')} noUnits defaultValue={500}
                          name={'max_amount'} onInput={handleInputs}/>
+            <ToggleInput switchLabels={[
+                str('input-labels.midpointDistanceMode'),
+                str('input-labels.cornerDistanceMode'),
+            ]} defaultValue={true} name={'min_distance_mode'} onInput={handleInputs}/>
             <NumberInput label={str('input-labels.UAVMinDistance')} defaultValue={'.1m'}
                          name={'min_distance'} onInput={handleInputs}/>
             <NumberInput label={str('input-labels.UAVSize')} defaultValue={'.25m'}
@@ -29,7 +33,8 @@ export default function Sidebar(props: HTMLAttributes<HTMLElement>) {
             <NumberInput label={str('input-labels.sharpnessThreshold')} defaultValue={'30deg'}
                          name={'sharp_threshold'} onInput={handleInputs}/>
 
-            <ToggleInput label={str('input-labels.toggleSurfaceFill')} defaultValue={true}/>
+            <ToggleInput label={str('input-labels.toggleSurfaceFill')} defaultValue={true}
+                         name={'features_only'} onInput={handleInputs}/>
         </div>
     </>
 }

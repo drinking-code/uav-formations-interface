@@ -1,7 +1,7 @@
 @use 'sass:math';
 @use 'src/utils/input-variables' as v;
 
-.toggleInput {
+.checkInput {
   $size-scaling: .8;
   width: v.$width;
   $height: v.$height * $size-scaling;

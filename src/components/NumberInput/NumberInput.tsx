@@ -29,7 +29,6 @@ export default function NumberInput(
     const input = useRef(null)
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
     const [showInputError, setShowInputError] = useState<boolean>(false)
-    const [currentUnit, setCurrentUnit] = useState(defaultUnit)
     const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
 
     function focus(e: FocusEvent<HTMLInputElement>) {
