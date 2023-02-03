@@ -35,6 +35,8 @@ export default function Sidebar(props: HTMLAttributes<HTMLElement>) {
 
             <ToggleInput label={str('input-labels.toggleSurfaceFill')} defaultValue={true}
                          name={'features_only'} onInput={handleInputs}/>
+            <NumberInput label={str('input-labels.surfaceFillAmount')} defaultValue={'50%'}
+                         name={'file_brightness'} onInput={handleInputs}/>
         </div>
     </>
 }

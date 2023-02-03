@@ -23,8 +23,11 @@ export type NumberInputPropsType = {
 const defaultUnit = 'cm'
 
 export default function NumberInput(
-    {defaultValue = 0, step = .1, label, name, noUnits, onInput, ...props}: NumberInputPropsType
+    {defaultValue = 0, step, label, name, noUnits, onInput, ...props}: NumberInputPropsType
 ) {
+    const isPercentage = typeof defaultValue === 'string' && defaultValue.endsWith('%')
+    if (isPercentage) noUnits = true
+    step = step ?? (isPercentage ? .01 : .1)
     const innerWrapper = useRef(null)
     const input = useRef(null)
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
@@ -69,9 +72,11 @@ export default function NumberInput(
                 return conversion.quantity + conversion.unit
             } else {
                 const roundedNumber = roundToPlace(Number(result), 6)
-                if (noUnits)
+                if (noUnits) {
+                    if (isPercentage)
+                        return roundToPlace(roundedNumber * 100, 6) + '%'
                     return roundedNumber
-                else {
+                } else {
                     return roundedNumber + defaultUnit
                 }
             }
@@ -92,7 +97,7 @@ export default function NumberInput(
     function offsetValue(step: number) {
         const inputElement = input.current as HTMLInputElement | null
         if (!inputElement) return
-        const unit = isNaN(Number(inputElement.value)) ? convertMany(inputElement.value).to('best').unit : null
+        const unit = isNaN(Number(inputElement.value)) && !isPercentage ? convertMany(inputElement.value).to('best').unit : null
         const newValue = convertInputValue(inputElement.value + `+(${step}${noUnits ? '' : unit})`)
         inputElement.value = newValue.toString()
         fireOnInput()
@@ -107,7 +112,11 @@ export default function NumberInput(
             detail: {
                 target: {
                     name: name,
-                    value: noUnits ? Number(inputElement.value) : convertMany(inputElement.value).to('best')
+                    value: noUnits
+                        ? isPercentage
+                            ? Number(inputElement.value.replace('%', '')) / 100
+                            : Number(inputElement.value)
+                        : convertMany(inputElement.value).to('best')
                 }
             }
         })
