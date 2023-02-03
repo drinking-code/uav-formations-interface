@@ -1,4 +1,4 @@
-import {FocusEvent, HTMLAttributes, KeyboardEvent, useEffect, useRef, useState} from 'react'
+import {FocusEvent, HTMLAttributes, KeyboardEvent, useRef, useState} from 'react'
 import {CSSTransition} from 'react-transition-group'
 import RoundDiv from 'react-round-div'
 import {evaluate, number, Unit} from 'mathjs'
@@ -10,7 +10,7 @@ import styles from './number-input.module.scss'
 import errorStyles from './error.module.scss'
 import {cl} from '../../utils/class-names'
 
-type NumberInputPropsType = {
+export type NumberInputPropsType = {
     defaultValue?: number | string
     step?: number
     label?: string

@@ -1,13 +1,7 @@
-@use 'variables' as v;
+@use 'src/utils/input-variables' as v;
 
 .label {
-  display: block;
-  margin-bottom: .5em;
-  padding-left: calc(#{v.$border-radius} * 1 / 3);
-
-  font-size: 12px;
-  letter-spacing: .02em;
-  opacity: .6;
+  @extend %label;
 }
 
 .numberInput {
@@ -16,7 +10,7 @@
 
   margin-bottom: 1rem;
 
-  background: #444;
+  background: v.$background-active;
   color: currentColor;
   border-radius: v.$border-radius;
 
@@ -25,7 +19,7 @@
   transition: background-color .3s ease;
 
   &.focus {
-    background: #555;
+    background: v.$background-active;
   }
 
   .innerWrapper {

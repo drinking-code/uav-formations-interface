@@ -1,0 +1,32 @@
+@use 'src/utils/input-variables' as v;
+
+.label {
+  @extend %label;
+}
+
+.meshInput {
+  width: v.$width;
+  height: 2.5rem;
+
+  margin-bottom: 1rem;
+
+  background: v.$background-active;
+  border-radius: v.$border-radius;
+
+  .innerWrapper {
+    width: v.$width;
+    $weird-offset: 3%;
+    height: 100% + $weird-offset;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .icon {
+    margin-right: .5rem;
+
+    font-size: 1.2rem;
+    filter: invert(1);
+  }
+}

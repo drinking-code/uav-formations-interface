@@ -1,0 +1,19 @@
+.icon {
+  display: inline-block;
+
+  $size: 1em;
+  height: $size;
+  width: $size;
+
+  font-size: 2rem;
+
+  background: {
+    position: center;
+    size: contain;
+    repeat: no-repeat;
+  }
+
+  &.box {
+    background-image: url('../../icons/box.svg');
+  }
+}
