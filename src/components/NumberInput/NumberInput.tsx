@@ -29,6 +29,7 @@ export default function NumberInput(
     const input = useRef(null)
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
     const [showInputError, setShowInputError] = useState<boolean>(false)
+    const [currentUnit, setCurrentUnit] = useState(defaultUnit)
     const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
 
     function focus(e: FocusEvent<HTMLInputElement>) {
@@ -61,8 +62,9 @@ export default function NumberInput(
             if (result.constructor.name === 'Unit') {
                 if (noUnits) throw new Error('Input does not support units')
                 const resultJson = result.toJSON()
-                if (resultJson.value === 0)
+                if (resultJson.value === 0) {
                     return '0' + defaultUnit
+                }
                 const conversion = convert(resultJson.value, resultJson.unit).to('best')
                 conversion.quantity = roundToPlace(conversion.quantity as number, 6)
                 return conversion.quantity + conversion.unit
@@ -70,8 +72,9 @@ export default function NumberInput(
                 const roundedNumber = roundToPlace(Number(result), 6)
                 if (noUnits)
                     return roundedNumber
-                else
+                else {
                     return roundedNumber + defaultUnit
+                }
             }
         } catch (err) {
             try {
@@ -87,9 +90,10 @@ export default function NumberInput(
         }
     }
 
-    function offsetValue(step: number, unit: string = defaultUnit) {
+    function offsetValue(step: number) {
         const inputElement = input.current as HTMLInputElement | null
         if (!inputElement) return
+        const unit = isNaN(Number(inputElement.value)) ? convertMany(inputElement.value).to('best').unit : null
         const newValue = convertInputValue(inputElement.value + `+(${step}${noUnits ? '' : unit})`)
         inputElement.value = newValue.toString()
         fireOnInput()
