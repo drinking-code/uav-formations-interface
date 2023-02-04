@@ -6,6 +6,7 @@ import convert, {convertMany} from 'convert'
 
 import {kebabCase} from '../../utils/string-manipulation'
 import {createFakeSyntheticEvent} from '../../utils/fake-synthetic-event'
+import {parseNumberString} from '../../utils/parse-number-string'
 
 import styles from './number-input.module.scss'
 import errorStyles from './error.module.scss'
@@ -110,7 +111,6 @@ export default function NumberInput(
         fireOnInput()
     }
 
-
     function fireOnInput() {
         if (!onInput) return
         const inputElement = input.current as HTMLInputElement | null
@@ -119,11 +119,7 @@ export default function NumberInput(
             detail: {
                 target: {
                     name: name,
-                    value: noUnits
-                        ? isPercentage
-                            ? Number(inputElement.value.replace('%', '')) / 100
-                            : Number(inputElement.value)
-                        : convertMany(inputElement.value).to('best')
+                    value: parseNumberString(inputElement.value)
                 }
             }
         })

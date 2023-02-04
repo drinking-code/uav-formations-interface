@@ -1,4 +1,5 @@
 import {HTMLAttributes, SyntheticEvent, useState} from 'react'
+import {_BestConversion, BestUnits} from 'convert'
 
 import inputs from './inputs'
 
@@ -10,18 +11,21 @@ import {InputGroup} from '../InputGroup'
 
 import styles from './sidebar.module.scss'
 import {cl} from '../../utils/class-names'
+import {parseNumberString} from '../../utils/parse-number-string'
 
 type inputDataType = typeof inputs[number][number]
 type inputNameType = inputDataType['name']
 type inputValueType = inputDataType['defaultValue']
 
 type SidebarPropsType = {
-    handleValueChange?: (values: { [key: inputNameType]: inputValueType }) => void
+    handleValueChange?: (values: { [key: inputNameType]: inputValueType | _BestConversion<number, BestUnits>}) => void
 } & HTMLAttributes<HTMLElement>
 
 export default function Sidebar({handleValueChange, ...props}: SidebarPropsType) {
     const [values, setValues] = useState(
-        Object.fromEntries(inputs.flat().map(input => [input.name, input.defaultValue]))
+        Object.fromEntries(inputs.flat().map(input =>
+            [input.name, input.type === NumberInput ? parseNumberString(input.defaultValue as string | number) : input.defaultValue]
+        ))
     )
 
     function handleInputs(e: SyntheticEvent<null, CustomEvent>) {
@@ -53,7 +57,7 @@ export default function Sidebar({handleValueChange, ...props}: SidebarPropsType)
                         defaultValue: input.defaultValue,
                         step: input.step,
                         alwaysRoundToPlace: input.alwaysRoundToPlace,
-                        noUnits: InputComponent.name === NumberInput.name
+                        noUnits: InputComponent === NumberInput
                             ? typeof input.defaultValue === 'number'
                             : undefined
                     }

@@ -23,6 +23,10 @@ app.get('*.(js|css)', async (req, res, next) => {
 
 app.use(express.static(publicDir))
 
+app.get('/formation', async (req, res) => {
+
+})
+
 const port = process.env.PORT ?? 3000
 app.listen(port, async () => {
     const url = `http://localhost:${port}`
