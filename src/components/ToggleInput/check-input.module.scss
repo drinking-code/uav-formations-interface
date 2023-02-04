@@ -7,7 +7,8 @@
   $height: v.$height * $size-scaling;
   height: $height;
 
-  margin: calc((#{v.$ungrouped-margin-no-label} + #{v.$ungrouped-margin}) / 2) 0;
+  margin-bottom: v.$ungrouped-margin;
+  padding-left: calc(#{v.$label-indent} / 2);
 
   display: flex;
   align-items: center;

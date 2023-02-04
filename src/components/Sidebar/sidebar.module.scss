@@ -1,5 +1,7 @@
+$padding-left-right: 2rem;
+
 .sidebar {
-  padding: 1.5rem 2rem;
+  padding: 1.5rem $padding-left-right;
   background: #222;
 
   overflow-y: auto;

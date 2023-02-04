@@ -1,0 +1,22 @@
+@use 'src/utils/input-variables' as v;
+@use '../Sidebar/sidebar.module' as sidebar;
+
+.lastElement {
+  margin-bottom: v.$grouped-margin;
+}
+
+.rule {
+  position: relative;
+  width: calc(100% + #{sidebar.$padding-left-right} * 2);
+  left: calc(#{sidebar.$padding-left-right} * -1);
+  $offset: calc(#{v.$grouped-margin} * -.05);
+  bottom: calc(#{v.$grouped-margin} / 2 + #{$offset});
+
+  margin: 0;
+  border: none;
+  border-top: 1px solid transparentize(white, .9);
+
+  &:last-of-type {
+    display: none;
+  }
+}
