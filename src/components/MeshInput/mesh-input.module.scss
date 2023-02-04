@@ -1,4 +1,6 @@
+@use 'sass:map';
 @use 'src/utils/input-variables' as v;
+@use '../../utils/transition-group' as tg;
 
 .label {
   @extend %label;
@@ -30,5 +32,68 @@
     margin-right: .5rem;
 
     font-size: 1.2em;
+  }
+}
+
+.dropZone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background: transparentize(v.$background, .2);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 100;
+  cursor: copy;
+
+  transition-property: transform, opacity;
+
+  $dashed-border-padding: 2rem;
+
+  .dashedBorder {
+    position: absolute;
+    top: $dashed-border-padding;
+    left: $dashed-border-padding;
+    width: calc(100vw - #{$dashed-border-padding} * 2);
+    height: calc(100vh - #{$dashed-border-padding} * 2);
+
+    border-radius: min(min(10vw, 10vh), $dashed-border-padding * 2);
+    border: 5px dashed transparentize(white, .8);
+  }
+
+  .dashedBorderWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    transition-property: transform, opacity;
+  }
+
+  .dropLabel {
+    font-size: 5rem;
+  }
+
+  $in-state: (opacity: 1, transform: scale(1));
+  $out-state: (opacity: 0, transform: scale(1.05));
+  $transition: .4s cubic-bezier(.1, 0, 0, 1);
+  $transition-out: .3s ease-in;
+
+  @include tg.in-out-transition($in-state, $out-state, $transition, $transition-out) using($props) {
+    opacity: map.get($props, opacity);
+
+    .dashedBorderWrapper {
+      transform: map.get($props, transform);
+
+      @if (map.has-key($props, transition)) {
+        transition: map.get($props, transition);
+      }
+    }
   }
 }

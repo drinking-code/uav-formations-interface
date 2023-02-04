@@ -6,8 +6,9 @@ import Sidebar from '../../components/Sidebar/Sidebar'
 import styles from './main-view.module.scss'
 
 export default function MainView() {
-    type PossibleInputValueType = string | number | _BestConversion<number, BestUnits> | boolean | undefined
-    function handleValueChange(values: {[key: string]: PossibleInputValueType}) {
+    type PossibleInputValueType = string | number | _BestConversion<number, BestUnits> | boolean | File[] | undefined
+
+    function handleValueChange(values: { [key: string]: PossibleInputValueType }) {
         console.log(values)
     }
 

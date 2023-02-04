@@ -1,10 +1,20 @@
+@use 'sass:map';
+
 @mixin in-out-transition($in-state-props, $out-state-props, $transition, $transition-out:0) {
+  $in-state-props-with-transition: map.set($in-state-props, transition, $transition);
+  $out-state-props-with-transition: none;
+  @if ($transition-out != 0) {
+    $out-state-props-with-transition: map.set($out-state-props, transition, $transition-out);
+  } @else {
+    $out-state-props-with-transition: map.set($out-state-props, transition, $transition);
+  }
+
   &.enter {
     @content($out-state-props);
   }
 
   &.enterActive {
-    @content($in-state-props);
+    @content($in-state-props-with-transition);
     transition: $transition;
   }
 
@@ -13,7 +23,8 @@
   }
 
   &.exitActive {
-    @content($out-state-props);
+    @content($out-state-props-with-transition);
+
     @if ($transition-out != 0) {
       transition: $transition-out;
     } @else {

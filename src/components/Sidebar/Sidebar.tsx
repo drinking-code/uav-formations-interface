@@ -15,10 +15,10 @@ import {parseNumberString} from '../../utils/parse-number-string'
 
 type inputDataType = typeof inputs[number][number]
 type inputNameType = inputDataType['name']
-type inputValueType = inputDataType['defaultValue']
+type inputValueType = inputDataType['defaultValue'] | _BestConversion<number, BestUnits> | File[]
 
 type SidebarPropsType = {
-    handleValueChange?: (values: { [key: inputNameType]: inputValueType | _BestConversion<number, BestUnits>}) => void
+    handleValueChange?: (values: { [key: inputNameType]: inputValueType }) => void
 } & HTMLAttributes<HTMLElement>
 
 export default function Sidebar({handleValueChange, ...props}: SidebarPropsType) {
