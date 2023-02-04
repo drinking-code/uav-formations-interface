@@ -18,12 +18,13 @@ export type NumberInputPropsType = {
     name?: string
     noUnits?: boolean
     onInput?: (e: SyntheticEvent<null, CustomEvent>) => void
-} & HTMLAttributes<HTMLElement>
+}
 
 const defaultUnit = 'cm'
 
 export default function NumberInput(
-    {defaultValue = 0, step: stepOrUndefined, label, name, noUnits, onInput, ...props}: NumberInputPropsType
+    {defaultValue = 0, step: stepOrUndefined, label, name, noUnits, onInput, ...props}:
+        NumberInputPropsType & HTMLAttributes<HTMLElement>
 ) {
     const isPercentage = typeof defaultValue === 'string' && defaultValue.endsWith('%')
     if (isPercentage) noUnits = true

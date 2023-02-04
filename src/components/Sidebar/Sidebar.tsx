@@ -1,56 +1,54 @@
-import {HTMLAttributes, SyntheticEvent} from 'react'
+import {HTMLAttributes, SyntheticEvent, useState} from 'react'
 
-import {NumberInput} from '../NumberInput'
-import {MeshInput} from '../MeshInput'
-import {ToggleInput} from '../ToggleInput'
-import {ColorInput} from '../ColorInput'
-
+import {MeshInputPropsType} from '../MeshInput'
+import {NumberInput, NumberInputPropsType} from '../NumberInput'
+import {ToggleInputPropsType} from '../ToggleInput'
+import {ColorInputPropsType} from '../ColorInput'
+import inputs from './inputs'
 
 import styles from './sidebar.module.scss'
 import {cl} from '../../utils/class-names'
 import str from '../../strings'
 
-export default function Sidebar(props: HTMLAttributes<HTMLElement>) {
+type SidebarPropsType = {
+    handleValueChange?: (values: { [key: string]: string }) => void
+} & HTMLAttributes<HTMLElement>
+
+export default function Sidebar({handleValueChange, ...props}: SidebarPropsType) {
+    const [values, setValues] = useState(
+        Object.fromEntries(inputs.flat().map(input => [input.name, input.defaultValue]))
+    )
+
     function handleInputs(e: SyntheticEvent<null, CustomEvent>) {
         const data = e.nativeEvent.detail
         console.log(data.target)
     }
 
+    type GenericInputPropsType =
+        MeshInputPropsType | NumberInputPropsType | ToggleInputPropsType | ColorInputPropsType
+
     return <>
         <div {...props} className={cl(styles.sidebar, props.className)}>
-            <MeshInput label={str('input-labels.mesh')}/>
-
-            <NumberInput label={str('input-labels.maxUAVAmount')} noUnits defaultValue={500}
-                         name={'max_amount'} onInput={handleInputs}/>
-            <ToggleInput switchLabels={[
-                str('input-labels.midpointDistanceMode'),
-                str('input-labels.cornerDistanceMode'),
-            ]} defaultValue={true} name={'min_distance_mode'} onInput={handleInputs}/>
-            <NumberInput label={str('input-labels.UAVMinDistance')} defaultValue={'.1m'}
-                         name={'min_distance'} onInput={handleInputs}/>
-            <NumberInput label={str('input-labels.UAVSize')} defaultValue={'.25m'}
-                         name={'uav_size'} onInput={handleInputs}/>
-
-            <NumberInput label={str('input-labels.sharpnessThreshold')} defaultValue={'30deg'}
-                         name={'sharp_threshold'} onInput={handleInputs}/>
-
-            <ToggleInput label={str('input-labels.toggleSurfaceFill')} defaultValue={true}
-                         name={'features_only'} onInput={handleInputs}/>
-            <NumberInput label={str('input-labels.surfaceFillAmount')} defaultValue={'50%'}
-                         name={'file_brightness'} onInput={handleInputs}/>
-
-            <ToggleInput label={str('input-labels.illuminationDirectionality')} defaultValue={true}
-                         name={'illumination_directionality'} onInput={handleInputs}/>
-            <NumberInput label={str('input-labels.illuminationDirectionalityBleed')} defaultValue={'50%'}
-                         name={'illumination_directionality_bleed'} onInput={handleInputs}/>
-
-            <ToggleInput label={str('input-labels.colorOverride')} defaultValue={false}
-                         name={'override_color'} onInput={handleInputs}/>
-            <ToggleInput switchLabels={[
-                str('input-labels.solidColor'),
-                str('input-labels.gradientColor'),
-            ]} defaultValue={true} name={'color_mode'} onInput={handleInputs}/>
-            <ColorInput label={str('input-labels.color')} defaultValue={'white'}/>
+            {inputs.map((inputGroup, index) =>
+                inputGroup.map((input: typeof inputs[number][number]): JSX.Element => {
+                    const InputComponent: (props: GenericInputPropsType) => JSX.Element =
+                        input.type as (props: GenericInputPropsType) => JSX.Element
+                    const props: GenericInputPropsType
+                        & { defaultValue?: string | number | boolean, noUnits?: boolean } /* ???? */ = {
+                        name: input.name,
+                    }
+                    if (input.defaultValue) props.defaultValue = input.defaultValue
+                    if (typeof input.defaultValue === 'number' && typeof InputComponent === typeof NumberInput)
+                        props.noUnits = true
+                    if (input.label) {
+                        if (typeof input.label === 'string')
+                            props.label = input.label
+                        else if (Array.isArray(input.label))
+                            (props as ToggleInputPropsType).switchLabels = input.label
+                    }
+                    return <InputComponent key={input.name} {...props} onInput={handleInputs}/>
+                })
+            )}
         </div>
     </>
 }

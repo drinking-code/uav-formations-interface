@@ -9,9 +9,10 @@ import str from '../../strings'
 
 export type MeshInputPropsType = {
     label?: string
-} & HTMLAttributes<HTMLElement>
+    name?: string
+}
 
-export default function MeshInput({label, ...props}: MeshInputPropsType) {
+export default function MeshInput({label, name, ...props}: MeshInputPropsType & HTMLAttributes<HTMLElement>) {
     const fileInput = useRef<HTMLInputElement | null>(null)
 
     function openFilePrompt() {

@@ -25,10 +25,10 @@ type SwitchInputPropsType = {
 
 export type ToggleInputPropsType =
     CheckInputPropsType | SwitchInputPropsType
-    & Omit<HTMLAttributes<HTMLElement>, 'defaultValue'>
 
 export default function ToggleInput(
-    {defaultValue = false, label, switchLabels, name, onInput, ...props}: ToggleInputPropsType
+    {defaultValue = false, label, switchLabels, name, onInput, ...props}:
+        ToggleInputPropsType & Omit<HTMLAttributes<HTMLElement>, 'defaultValue'>
 ) {
     const [checked, setChecked] = useState<boolean>(defaultValue)
 

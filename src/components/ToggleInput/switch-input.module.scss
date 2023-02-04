@@ -8,7 +8,7 @@
   height: $height;
 
   padding: 0;
-  margin: v.$ungrouped-margin-no-label 0 v.$ungrouped-margin;
+  margin: v.$ungrouped-margin-no-label 0;
   background: v.$background;
 
   appearance: none;
@@ -50,7 +50,7 @@
     width: 50%;
     height: 100%;
 
-    font-size: .7rem;
+    font-size: 12px;
 
     display: inline-flex;
     justify-content: center;

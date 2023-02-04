@@ -8,12 +8,14 @@ import styles from './color-input.module.scss'
 import {cl} from '../../utils/class-names'
 import str from '../../strings'
 
-export type MeshInputPropsType = {
+export type ColorInputPropsType = {
     label?: string
+    name?: string
     defaultValue: string
-} & HTMLAttributes<HTMLElement>
+}
 
-export default function ColorInput({label, defaultValue, ...props}: MeshInputPropsType) {
+export default function ColorInput({label, defaultValue, name, ...props}:
+                                       ColorInputPropsType & HTMLAttributes<HTMLElement>) {
     const [color, setColor] = useState(toHexColor(defaultValue))
 
     function toHexColor(value: string): string {
