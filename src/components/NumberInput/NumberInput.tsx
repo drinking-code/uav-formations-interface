@@ -14,6 +14,7 @@ import {cl} from '../../utils/class-names'
 export type NumberInputPropsType = {
     defaultValue?: number | string
     step?: number
+    alwaysRoundToPlace?: number
     label?: string
     name?: string
     noUnits?: boolean
@@ -23,7 +24,7 @@ export type NumberInputPropsType = {
 const defaultUnit = 'cm'
 
 export default function NumberInput(
-    {defaultValue = 0, step: stepOrUndefined, label, name, noUnits, onInput, ...props}:
+    {defaultValue = 0, step: stepOrUndefined, alwaysRoundToPlace, label, name, noUnits, onInput, ...props}:
         NumberInputPropsType & HTMLAttributes<HTMLElement>
 ) {
     const isPercentage = typeof defaultValue === 'string' && defaultValue.endsWith('%')
@@ -34,6 +35,8 @@ export default function NumberInput(
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
     const [showInputError, setShowInputError] = useState<boolean>(false)
     const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
+
+    console.log(alwaysRoundToPlace)
 
     function focus(e: FocusEvent<HTMLInputElement>) {
         setValueBeforeFocus((e.target as HTMLInputElement).value)

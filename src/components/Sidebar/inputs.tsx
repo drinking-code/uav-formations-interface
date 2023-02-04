@@ -9,6 +9,8 @@ export type AnyInputType = typeof MeshInput | typeof NumberInput | typeof Toggle
 const inputs: {
     type: AnyInputType
     name: string,
+    step?: number,
+    alwaysRoundToPlace?: number,
     label?: string | [string, string],
     defaultValue?: number | string | boolean
 }[][] = [[{
@@ -19,6 +21,8 @@ const inputs: {
     type: NumberInput,
     name: 'max_amount',
     defaultValue: 500,
+    step: 1,
+    alwaysRoundToPlace: 1,
     label: str('input-labels.maxUAVAmount'),
 }, {
     type: ToggleInput,

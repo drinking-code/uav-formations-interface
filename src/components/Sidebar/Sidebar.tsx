@@ -8,10 +8,13 @@ import inputs from './inputs'
 
 import styles from './sidebar.module.scss'
 import {cl} from '../../utils/class-names'
-import str from '../../strings'
+
+type inputDataType = typeof inputs[number][number]
+type inputNameType = inputDataType['name']
+type inputValueType = inputDataType['defaultValue']
 
 type SidebarPropsType = {
-    handleValueChange?: (values: { [key: string]: string }) => void
+    handleValueChange?: (values: { [key: inputNameType]: inputValueType }) => void
 } & HTMLAttributes<HTMLElement>
 
 export default function Sidebar({handleValueChange, ...props}: SidebarPropsType) {
@@ -21,7 +24,12 @@ export default function Sidebar({handleValueChange, ...props}: SidebarPropsType)
 
     function handleInputs(e: SyntheticEvent<null, CustomEvent>) {
         const data = e.nativeEvent.detail
-        console.log(data.target)
+        setValues(currentValues => {
+            currentValues[data.target.name] = data.target.value
+            return currentValues
+        })
+        if (handleValueChange)
+            handleValueChange(values)
     }
 
     type GenericInputPropsType =
@@ -29,17 +37,19 @@ export default function Sidebar({handleValueChange, ...props}: SidebarPropsType)
 
     return <>
         <div {...props} className={cl(styles.sidebar, props.className)}>
-            {inputs.map((inputGroup, index) =>
-                inputGroup.map((input: typeof inputs[number][number]): JSX.Element => {
+            {inputs.map((inputGroup) =>
+                inputGroup.map((input: inputDataType): JSX.Element => {
                     const InputComponent: (props: GenericInputPropsType) => JSX.Element =
                         input.type as (props: GenericInputPropsType) => JSX.Element
                     const props: GenericInputPropsType
-                        & { defaultValue?: string | number | boolean, noUnits?: boolean } /* ???? */ = {
+                        & { defaultValue?: string | number | boolean, noUnits?: boolean, step?: number } /* ???? */ = {
                         name: input.name,
+                        defaultValue: input.defaultValue,
+                        step: input.step,
+                        noUnits: typeof InputComponent === typeof NumberInput
+                            ? typeof input.defaultValue === 'number'
+                            : undefined
                     }
-                    if (input.defaultValue) props.defaultValue = input.defaultValue
-                    if (typeof input.defaultValue === 'number' && typeof InputComponent === typeof NumberInput)
-                        props.noUnits = true
                     if (input.label) {
                         if (typeof input.label === 'string')
                             props.label = input.label
