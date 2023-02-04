@@ -22,7 +22,7 @@ const inputs: {
     name: 'max_amount',
     defaultValue: 500,
     step: 1,
-    alwaysRoundToPlace: 1,
+    alwaysRoundToPlace: 0,
     label: str('input-labels.maxUAVAmount'),
 }, {
     type: ToggleInput,
@@ -67,7 +67,7 @@ const inputs: {
 },], [{
     type: ToggleInput,
     name: 'override_color',
-    defaultValue: true,
+    defaultValue: false,
     label: str('input-labels.colorOverride'),
 }, {
     type: ToggleInput,

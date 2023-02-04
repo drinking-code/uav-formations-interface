@@ -36,8 +36,6 @@ export default function NumberInput(
     const [showInputError, setShowInputError] = useState<boolean>(false)
     const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
 
-    console.log(alwaysRoundToPlace)
-
     function focus(e: FocusEvent<HTMLInputElement>) {
         setValueBeforeFocus((e.target as HTMLInputElement).value)
         ;(innerWrapper.current as HTMLElement | null)?.parentElement?.classList.add(styles.focus)
@@ -57,7 +55,12 @@ export default function NumberInput(
         fireOnInput()
     }
 
+    function round(value: number) {
+        return roundToPlace(value, 6)
+    }
+
     function roundToPlace(value: number, place: number): number {
+        place = alwaysRoundToPlace ?? place
         return Math.round(value * 10 ** place) / 10 ** place
     }
 
@@ -72,13 +75,13 @@ export default function NumberInput(
                     return '0' + defaultUnit
                 }
                 const conversion = convert(resultJson.value, resultJson.unit).to('best')
-                conversion.quantity = roundToPlace(conversion.quantity as number, 6)
+                conversion.quantity = round(conversion.quantity as number)
                 return conversion.quantity + conversion.unit
             } else {
-                const roundedNumber = roundToPlace(Number(result), 6)
+                const roundedNumber = round(Number(result))
                 if (noUnits) {
                     if (isPercentage)
-                        return roundToPlace(roundedNumber * 100, 6) + '%'
+                        return round(roundedNumber * 100) + '%'
                     return roundedNumber
                 } else {
                     return roundedNumber + defaultUnit

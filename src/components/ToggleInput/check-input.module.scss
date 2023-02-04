@@ -2,7 +2,7 @@
 @use 'src/utils/input-variables' as v;
 
 .checkInput {
-  $size-scaling: .8;
+  $size-scaling: .6;
   width: v.$width;
   $height: v.$height * $size-scaling;
   height: $height;
@@ -36,7 +36,7 @@
     &:checked {
       $tick-size: 60%;
       $tick-position-top: 58%;
-      background: url('../../icons/check.svg') center #{$tick-position-top} / #{$tick-size} no-repeat, v.$background-active;
+      background: url('../../icons/check-thick.svg') center #{$tick-position-top} / #{$tick-size} no-repeat, v.$background-active;
     }
   }
 }
