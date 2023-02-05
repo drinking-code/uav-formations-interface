@@ -1,15 +1,14 @@
-import React, {HTMLAttributes, useEffect, useState} from 'react'
-import {AmbientLight, ColorRepresentation, DirectionalLight, Mesh, MeshStandardMaterial, Vector3} from 'three'
-import {MTLLoader, OBJLoader, PLYLoader, STLLoader} from 'three-stdlib'
-import {Canvas, useThree} from '@react-three/fiber'
+import {HTMLAttributes, useState} from 'react'
+import {Object3D, Vector3} from 'three'
+import {Canvas} from '@react-three/fiber'
 import {OrbitControls} from '@react-three/drei'
 
-type ImportMeshesPropsType = {
-    newMeshFiles: File[]
-}
+import ImportMeshes, {ImportMeshesPropsType} from './ImportMeshes'
 
 export default function ThreeViewport({newMeshFiles, ...props}:
                                           ImportMeshesPropsType & HTMLAttributes<HTMLElement>) {
+    const [target, setTarget] = useState<Object3D | null>(null)
+
     const gridSize = 16
     const smallTileSize = .2
     const bigTileSize = 1
@@ -21,7 +20,7 @@ export default function ThreeViewport({newMeshFiles, ...props}:
             <Canvas camera={{
                 fov: 40,
                 position: new Vector3(...([6, 8, 15].map(v => v * .5))),
-            }}>
+            }} onPointerMissed={() => setTarget(null)}>
                 <gridHelper args={[gridSize, gridSize / smallTileSize, thickLinesColor, thinLinesColor]}/>
                 <gridHelper args={[gridSize, gridSize / bigTileSize, thickLinesColor, thickLinesColor]}/>
                 <directionalLight position={[-2, 3, 3]} intensity={.5}/>
@@ -39,51 +38,9 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                     </bufferGeometry>
                     <pointsMaterial size={0.1}/>
                 </points>*/}
-                <ImportMeshes newMeshFiles={newMeshFiles}/>
+                <ImportMeshes newMeshFiles={newMeshFiles} target={target} setTarget={setTarget}/>
                 <OrbitControls makeDefault enableDamping={false}/>
             </Canvas>
         </div>
     </>
-}
-
-function ImportMeshes({newMeshFiles}: ImportMeshesPropsType) {
-    const [meshFiles, setMeshFiles] = useState<File[]>([])
-    const threeState = useThree()
-
-    const loaders = {
-        '.stl': STLLoader,
-        '.ply': PLYLoader,
-        '.obj': OBJLoader,
-        // '.mtl': MTLLoader,
-    }
-
-    useEffect(() => {
-        for (const meshFile of newMeshFiles) {
-            const reader = new FileReader()
-            reader.addEventListener('load', (e: ProgressEvent) => {
-                if (!e.target) return
-                const contents = (e.target as FileReader).result
-                if (!contents) return
-                const loaderEntry = Array.from(Object.entries(loaders))
-                    .find(([suffix]) => meshFile.name.endsWith(suffix))
-                if (!loaderEntry) return
-                const Loader = loaderEntry[1]
-                // @ts-ignore TS2345: Argument of type 'string | ArrayBuffer' is not assignable to parameter of type 'string'.
-                // Type 'ArrayBuffer' is not assignable to type 'string'.
-                const geometry = (new Loader()).parse(contents)
-                // geometry.sourceType = "stl"
-                // geometry.sourceFile = file.name
-                const material = new MeshStandardMaterial()
-                const mesh = new Mesh(geometry, material)
-                threeState.scene.add(mesh)
-            })
-            if (meshFile.name.endsWith('.obj'))
-                reader.readAsText(meshFile)
-            else
-                reader.readAsArrayBuffer(meshFile)
-        }
-        setMeshFiles([...meshFiles, ...newMeshFiles])
-    }, [newMeshFiles])
-
-    return <></>
 }
