@@ -5,11 +5,13 @@ import TerserPlugin from 'terser-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CopyPlugin from 'copy-webpack-plugin'
+import ThreeMinifierPlugin from '@yushijinhun/three-minifier-webpack'
 import CompressionPlugin from 'compression-webpack-plugin'
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer'
 
 import makeModule from './webpack.modules.config.js'
 
+const threeMinifier = new ThreeMinifierPlugin();
 const isProduction = process.env.NODE_ENV === 'production'
 
 export default {
@@ -24,6 +26,9 @@ export default {
     },
     module: makeModule(),
     resolve: {
+        plugins: [
+            threeMinifier.resolver,
+        ],
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },
     optimization: {
@@ -80,6 +85,7 @@ export default {
         hints: false,
     },
     plugins: [
+        threeMinifier,
         new MiniCssExtractPlugin({
             filename: 'styles.css',
         }),
@@ -88,11 +94,11 @@ export default {
                 {from: 'src/index.html', to: '.'},
             ],
         }),
-        isProduction && new CompressionPlugin({
+        /*isProduction && new CompressionPlugin({
             test: /\.(js|css)$/i,
             deleteOriginalAssets: true
-        }),
-        isProduction && new webpack.ProgressPlugin()
-        // new BundleAnalyzerPlugin()
+        }),*/
+        isProduction && new webpack.ProgressPlugin(),
+        new BundleAnalyzerPlugin(),
     ].filter(v => v),
 }

@@ -31,15 +31,15 @@ export default function NumberInput(
     const isPercentage = typeof defaultValue === 'string' && defaultValue.endsWith('%')
     if (isPercentage) noUnits = true
     const step = stepOrUndefined ?? (isPercentage ? .01 : .1)
-    const innerWrapper = useRef(null)
-    const input = useRef(null)
+    const innerWrapper = useRef<HTMLElement>(null!)
+    const input = useRef<HTMLInputElement>(null!)
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
     const [showInputError, setShowInputError] = useState<boolean>(false)
     const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
 
     function focus(e: FocusEvent<HTMLInputElement>) {
         setValueBeforeFocus((e.target as HTMLInputElement).value)
-        ;(innerWrapper.current as HTMLElement | null)?.parentElement?.classList.add(styles.focus)
+        innerWrapper.current.parentElement?.classList.add(styles.focus)
         e.target.addEventListener('mouseup', () => {
             (e.target as HTMLInputElement).setSelectionRange(0, (e.target as HTMLInputElement).value.length)
         }, {once: true})
@@ -51,7 +51,7 @@ export default function NumberInput(
     }
 
     function blur(e: FocusEvent<HTMLInputElement>) {
-        (innerWrapper.current as HTMLElement | null)?.parentElement?.classList.remove(styles.focus)
+        innerWrapper.current.parentElement?.classList.remove(styles.focus)
         e.target.value = convertInputValue(e.target.value).toString()
         fireOnInput()
     }
@@ -103,7 +103,7 @@ export default function NumberInput(
     }
 
     function offsetValue(step: number) {
-        const inputElement = input.current as HTMLInputElement | null
+        const inputElement = input.current
         if (!inputElement) return
         const unit = isNaN(Number(inputElement.value)) && !isPercentage ? convertMany(inputElement.value).to('best').unit : null
         const newValue = convertInputValue(inputElement.value + `+(${step}${noUnits ? '' : unit})`)
@@ -113,7 +113,7 @@ export default function NumberInput(
 
     function fireOnInput() {
         if (!onInput) return
-        const inputElement = input.current as HTMLInputElement | null
+        const inputElement = input.current
         if (!inputElement) return
         const customInputEvent = new CustomEvent('input', {
             detail: {

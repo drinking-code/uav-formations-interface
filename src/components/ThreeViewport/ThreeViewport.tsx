@@ -1,7 +1,7 @@
 import React, {HTMLAttributes, useRef, useState} from 'react'
 
-import * as THREE from 'three'
-import {Canvas, useFrame, ThreeElements} from '@react-three/fiber'
+import {Mesh} from 'three'
+import {Canvas, useFrame} from '@react-three/fiber'
 
 export default function ThreeViewport(props: HTMLAttributes<HTMLElement>) {
     return <>
@@ -16,8 +16,8 @@ export default function ThreeViewport(props: HTMLAttributes<HTMLElement>) {
     </>
 }
 
-function Box(props: ThreeElements['mesh']) {
-    const ref = useRef<THREE.Mesh>(null!)
+function Box(props: {}) {
+    const ref = useRef<Mesh>(null!)
     const [hovered, hover] = useState(false)
     const [clicked, click] = useState(false)
     useFrame((state, delta) => {

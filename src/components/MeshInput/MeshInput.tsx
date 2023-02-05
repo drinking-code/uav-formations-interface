@@ -18,15 +18,15 @@ export type MeshInputPropsType = {
 const ALLOWED_FILES = ['.stl', '.obj', '.mtl', '.ply']
 
 export default function MeshInput({label, name, onInput, ...props}: MeshInputPropsType & HTMLAttributes<HTMLElement>) {
-    const fileInput = useRef<HTMLInputElement | null>(null)
+    const fileInput = useRef<HTMLInputElement>(null!)
     const [showDropZone, setShowDropZone] = useState(false)
 
     function openFilePrompt() {
-        fileInput.current?.click()
+        fileInput.current.click()
     }
 
     function handleFileInput() {
-        const fileInputElement = fileInput.current as HTMLInputElement | null
+        const fileInputElement = fileInput.current
         if (!fileInputElement || !fileInputElement.files) return
         const files = [...fileInputElement.files]
         fireOnInput(files)
