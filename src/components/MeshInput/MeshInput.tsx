@@ -68,7 +68,7 @@ export default function MeshInput({label, name, onInput, ...props}: MeshInputPro
             window.removeEventListener('dragend', handleDragEnd)
             window.removeEventListener('dragleave', handleDragEnd)
         }
-    })
+    }, [])
 
     function dropHandler(e: DragEvent) {
         e.preventDefault();

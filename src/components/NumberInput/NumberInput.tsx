@@ -31,7 +31,7 @@ export default function NumberInput(
     const isPercentage = typeof defaultValue === 'string' && defaultValue.endsWith('%')
     if (isPercentage) noUnits = true
     const step = stepOrUndefined ?? (isPercentage ? .01 : .1)
-    const innerWrapper = useRef<HTMLElement>(null!)
+    const innerWrapper = useRef<HTMLDivElement>(null!)
     const input = useRef<HTMLInputElement>(null!)
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
     const [showInputError, setShowInputError] = useState<boolean>(false)

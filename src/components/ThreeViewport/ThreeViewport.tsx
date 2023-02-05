@@ -1,5 +1,4 @@
 import React, {HTMLAttributes, useRef, useState} from 'react'
-
 import {Mesh} from 'three'
 import {Canvas, useFrame} from '@react-three/fiber'
 
