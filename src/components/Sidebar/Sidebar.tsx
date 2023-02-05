@@ -3,7 +3,7 @@ import {_BestConversion, BestUnits} from 'convert'
 
 import inputs from './inputs'
 
-import {MeshInputPropsType} from '../MeshInput'
+import {MeshInput, MeshInputPropsType} from '../MeshInput'
 import {NumberInput, NumberInputPropsType} from '../NumberInput'
 import {ToggleInputPropsType} from '../ToggleInput'
 import {ColorInputPropsType} from '../ColorInput'
@@ -12,16 +12,18 @@ import {InputGroup} from '../InputGroup'
 import styles from './sidebar.module.scss'
 import {cl} from '../../utils/class-names'
 import {parseNumberString} from '../../utils/parse-number-string'
+import str from '../../strings'
 
 type inputDataType = typeof inputs[number][number]
 type inputNameType = inputDataType['name']
-type inputValueType = inputDataType['defaultValue'] | _BestConversion<number, BestUnits> | File[]
+type inputValueType = inputDataType['defaultValue'] | _BestConversion<number, BestUnits>
 
 type SidebarPropsType = {
     handleValueChange?: (values: { [key: inputNameType]: inputValueType }) => void
+    addMeshes?: (meshes: File[]) => void
 } & HTMLAttributes<HTMLElement>
 
-export default function Sidebar({handleValueChange, ...props}: SidebarPropsType) {
+export default function Sidebar({handleValueChange, addMeshes, ...props}: SidebarPropsType) {
     const [values, setValues] = useState(
         Object.fromEntries(inputs.flat().map(input =>
             [input.name, input.type === NumberInput ? parseNumberString(input.defaultValue as string | number) : input.defaultValue]
@@ -38,11 +40,20 @@ export default function Sidebar({handleValueChange, ...props}: SidebarPropsType)
             handleValueChange(values)
     }
 
+    function handleMeshInput(e: SyntheticEvent<null, CustomEvent>) {
+        if (!addMeshes) return
+        const data = e.nativeEvent.detail
+        addMeshes(data.target.value)
+    }
+
     type GenericInputPropsType =
         MeshInputPropsType | NumberInputPropsType | ToggleInputPropsType | ColorInputPropsType
 
     return <>
         <div {...props} className={cl(styles.sidebar, props.className)}>
+            <InputGroup>
+                <MeshInput label={str('input-labels.mesh')} name={'mesh'} onInput={handleMeshInput}/>
+            </InputGroup>
             {inputs.map((inputGroup, index) => <InputGroup key={index}>
                 {inputGroup.map((input: inputDataType): JSX.Element => {
                     const InputComponent: (props: GenericInputPropsType) => JSX.Element =

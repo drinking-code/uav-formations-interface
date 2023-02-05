@@ -94,11 +94,11 @@ export default {
                 {from: 'src/index.html', to: '.'},
             ],
         }),
-        /*isProduction && new CompressionPlugin({
+        isProduction && new CompressionPlugin({
             test: /\.(js|css)$/i,
             deleteOriginalAssets: true
-        }),*/
+        }),
         isProduction && new webpack.ProgressPlugin(),
-        new BundleAnalyzerPlugin(),
+        // new BundleAnalyzerPlugin(),
     ].filter(v => v),
 }

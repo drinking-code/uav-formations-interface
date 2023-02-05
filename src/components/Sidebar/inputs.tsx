@@ -14,10 +14,6 @@ const inputs: {
     label?: string | [string, string],
     defaultValue?: number | string | boolean
 }[][] = [[{
-    type: MeshInput,
-    name: 'mesh',
-    label: str('input-labels.mesh'),
-},], [{
     type: NumberInput,
     name: 'max_amount',
     defaultValue: 500,
