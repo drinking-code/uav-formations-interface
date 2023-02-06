@@ -63,6 +63,7 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
                         noUnits?: boolean,
                         step?: number,
                         alwaysRoundToPlace?: number
+                        invert?: boolean
                     } /* ???? */ = {
                         name: input.name,
                         defaultValue: input.defaultValue,
@@ -70,7 +71,8 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
                         alwaysRoundToPlace: input.alwaysRoundToPlace,
                         noUnits: InputComponent === NumberInput
                             ? typeof input.defaultValue === 'number'
-                            : undefined
+                            : undefined,
+                        invert: input.invert
                     }
                     if (input.label) {
                         if (typeof input.label === 'string')

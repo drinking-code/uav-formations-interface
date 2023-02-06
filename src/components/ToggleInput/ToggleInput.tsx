@@ -10,6 +10,7 @@ import {cl} from '../../utils/class-names'
 type ToggleInputPropsBaseType = {
     defaultValue?: boolean
     name?: string
+    invert?: boolean
     onInput?: (e: SyntheticEvent<null, CustomEvent>) => void
 }
 
@@ -27,9 +28,13 @@ export type ToggleInputPropsType =
     CheckInputPropsType | SwitchInputPropsType
 
 export default function ToggleInput(
-    {defaultValue = false, label, switchLabels, name, onInput, ...props}:
+    {defaultValue = false, label, switchLabels, name, onInput, invert = false, ...props}:
         ToggleInputPropsType & Omit<HTMLAttributes<HTMLElement>, 'defaultValue'>
 ) {
+    function xor(a: boolean, b: boolean): boolean {
+        return Boolean(a !== b)
+    }
+
     const [checked, setChecked] = useState<boolean>(defaultValue)
 
     function setValue(newValue: typeof checked) {
@@ -54,14 +59,14 @@ export default function ToggleInput(
     if (switchLabels) {
         return <>
             <fieldset className={switchStyles.wrapper}>
-                <RoundDiv className={cl(switchStyles.selector, checked && switchStyles.right)}/>
+                <RoundDiv className={cl(switchStyles.selector, xor(checked, invert) && switchStyles.right)}/>
                 <label className={switchStyles.switchInput}>
-                    <input type={'radio'} checked={!checked} onChange={() => setValue(false)}
+                    <input type={'radio'} checked={xor(!checked, invert)} onChange={() => setValue(xor(false, invert))}
                            className={switchStyles.radio}/>
                     <span className={switchStyles.label}>{switchLabels[0]}</span>
                 </label>
                 <label className={switchStyles.switchInput}>
-                    <input type={'radio'} checked={checked} onChange={() => setValue(true)}
+                    <input type={'radio'} checked={xor(checked, invert)} onChange={() => setValue(xor(true, invert))}
                            className={switchStyles.radio}/>
                     <span className={switchStyles.label}>{switchLabels[1]}</span>
                 </label>
@@ -71,7 +76,7 @@ export default function ToggleInput(
         return <>
             <label className={checkStyles.checkInput}>
                 <RoundDiv className={checkStyles.checkboxWrapper}>
-                    <input type={'checkbox'} checked={checked} onChange={() => setValue(!checked)}
+                    <input type={'checkbox'} checked={xor(checked, invert)} onChange={() => setValue(!checked)}
                            className={checkStyles.checkbox}/>
                 </RoundDiv>
                 <span className={checkStyles.label}>{label}</span>

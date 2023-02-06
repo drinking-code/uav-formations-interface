@@ -12,7 +12,8 @@ const inputs: {
     step?: number,
     alwaysRoundToPlace?: number,
     label?: string | [string, string],
-    defaultValue?: number | string | boolean
+    defaultValue?: number | string | boolean,
+    invert?: boolean,
 }[][] = [[{
     type: NumberInput,
     name: 'max_amount',
@@ -43,7 +44,8 @@ const inputs: {
 },], [{
     type: ToggleInput,
     name: 'features_only',
-    defaultValue: true,
+    defaultValue: false,
+    invert: true,
     label: str('input-labels.toggleSurfaceFill'),
 }, {
     type: NumberInput,
