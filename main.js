@@ -1,6 +1,5 @@
 import path from 'path'
 import fs from 'fs'
-import http2 from 'http2'
 
 import open from 'open'
 import express from 'express'

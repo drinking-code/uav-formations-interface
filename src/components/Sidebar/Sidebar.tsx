@@ -1,12 +1,12 @@
-import {HTMLAttributes, SyntheticEvent, useState} from 'react'
+import {HTMLAttributes, SyntheticEvent, useEffect, useState} from 'react'
 import {_BestConversion, BestUnits} from 'convert'
 
 import inputs from './inputs'
 
 import {MeshInput, MeshInputPropsType} from '../MeshInput'
 import {NumberInput, NumberInputPropsType} from '../NumberInput'
-import {ToggleInputPropsType} from '../ToggleInput'
-import {ColorInputPropsType} from '../ColorInput'
+import {ToggleInput, ToggleInputPropsType} from '../ToggleInput'
+import {ColorInput, ColorInputPropsType, toHexColor} from '../ColorInput'
 import {InputGroup} from '../InputGroup'
 
 import styles from './sidebar.module.scss'
@@ -26,7 +26,11 @@ type SidebarPropsType = {
 export default function Sidebar({handleValueChange, addMeshes, ...props}: SidebarPropsType) {
     const [values, setValues] = useState(
         Object.fromEntries(inputs.flat().map(input =>
-            [input.name, input.type === NumberInput ? parseNumberString(input.defaultValue as string | number) : input.defaultValue]
+            [input.name, input.type === NumberInput
+                ? parseNumberString(input.defaultValue as string | number)
+                : input.type === ColorInput
+                    ? toHexColor(input.defaultValue as string)
+                    : input.defaultValue]
         ))
     )
 
@@ -39,6 +43,11 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
         if (handleValueChange)
             handleValueChange(values)
     }
+
+    useEffect(() => {
+        if (handleValueChange)
+            handleValueChange(values)
+    }, [])
 
     function handleMeshInput(e: SyntheticEvent<null, CustomEvent>) {
         if (!addMeshes) return

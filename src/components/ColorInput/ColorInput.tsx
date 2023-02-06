@@ -18,13 +18,6 @@ export default function ColorInput({label, defaultValue, name, ...props}:
                                        ColorInputPropsType & HTMLAttributes<HTMLElement>) {
     const [color, setColor] = useState(toHexColor(defaultValue))
 
-    function toHexColor(value: string): string {
-        const parsed = parse(value)
-        if (!parsed)
-            throw new Error(`\`${value}\` is not a valid color.`)
-        return '#' + parsed.values.map(number => number.toString(16).toUpperCase()).join('')
-    }
-
     return <>
         {label && <label className={styles.label}>{label}</label>}
         <RoundDiv {...props} className={cl(props.className, styles.colorInput)}>
@@ -34,4 +27,11 @@ export default function ColorInput({label, defaultValue, name, ...props}:
             </div>
         </RoundDiv>
     </>
+}
+
+export function toHexColor(value: string): string {
+    const parsed = parse(value)
+    if (!parsed)
+        throw new Error(`\`${value}\` is not a valid color.`)
+    return '#' + parsed.values.map(number => number.toString(16).toUpperCase()).join('')
 }
