@@ -8,10 +8,11 @@ export type ImportMeshesPropsType = {
     newMeshFiles: File[]
 }
 
-export default function ImportMeshes({newMeshFiles, target, setTarget}:
-                                         ImportMeshesPropsType & { target: Object3D | null, setTarget: Dispatch<SetStateAction<Object3D | null>> }) {
+export default function ImportMeshes({newMeshFiles, target, setTarget, meshes, setMeshes}:
+                                         ImportMeshesPropsType &
+                                         { target: Object3D | null, setTarget: Dispatch<SetStateAction<Object3D | null>> } &
+                                         { meshes: BufferGeometry[], setMeshes: Dispatch<SetStateAction<BufferGeometry[]>> }) {
     const [meshFiles, setMeshFiles] = useState<File[]>([])
-    const [meshes, setMeshes] = useState<BufferGeometry[]>([])
 
     const loaders = {
         '.stl': STLLoader,

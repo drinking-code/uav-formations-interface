@@ -1,9 +1,12 @@
 import path from 'path'
 import fs from 'fs'
+import http2 from 'http2'
 
 import open from 'open'
 import express from 'express'
 import mime from 'mime'
+
+import apiRouter from './server/api-router.js'
 
 const app = express()
 
@@ -22,10 +25,7 @@ app.get('*.(js|css)', async (req, res, next) => {
 })
 
 app.use(express.static(publicDir))
-
-app.get('/formation', async (req, res) => {
-
-})
+app.use(apiRouter)
 
 const port = process.env.PORT ?? 3000
 app.listen(port, async () => {
