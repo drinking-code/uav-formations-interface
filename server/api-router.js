@@ -13,13 +13,18 @@ const data = {
 }
 
 router.use(express.text())
+router.use(express.json())
+
 router.put('/mesh', async (req, res) => {
     data.mesh = req.body
     res.status(http_code.no_content).end()
 })
 
 router.put('/options', async (req, res) => {
-
+    if (!req.is('application/json'))
+        return res.status(http_code.bad_request).end()
+    data.options = req.body
+    res.status(http_code.no_content).end()
 })
 
 const pythonRepo = 'https://github.com/drinking-code/uav-formations-for-volumetric-displays-from-polygon-meshes'

@@ -1,8 +1,10 @@
 import {useState} from 'react'
-import convert, {_BestConversion, BestUnits, Length} from 'convert'
+import convert, {_BestConversion, BestUnits} from 'convert'
 
 import {ThreeViewport} from '../../components/ThreeViewport'
 import Sidebar from '../../components/Sidebar/Sidebar'
+
+import {setOptions} from '../../server-communication'
 
 import styles from './main-view.module.scss'
 
@@ -17,17 +19,16 @@ export default function MainView() {
         values = Object.fromEntries(
             Array.from(Object.entries(values))
                 .map(([key, inputValue]) => {
-                    function isBestConversionResult(value:any): value is _BestConversion<number, BestUnits>{
+                    function isBestConversionResult(value: any): value is _BestConversion<number, BestUnits> {
                         return value.constructor === {}.constructor &&
                             typeof value.quantity === 'number' &&
                             typeof value.unit === 'string'
                     }
+
                     if (isBestConversionResult(inputValue)) {
-                        try {
-                            // @ts-ignore
+                        try { // @ts-ignore
                             inputValue = convert(inputValue.quantity, inputValue.unit).to(meshScaleUnit)
-                        } catch (err) {
-                            // inputValue.unit is not in length family
+                        } catch (err) { // inputValue.unit is not in length family
                             inputValue = inputValue.quantity
                             // todo: normalise (convert) angles to degrees
                         }
@@ -35,7 +36,11 @@ export default function MainView() {
                     return [key, inputValue]
                 })
         )
-        console.table(values)
+        if (values.min_distance_mode) {
+            values.min_distance = values.min_distance as number + (values.uav_size as number)
+        }
+        delete values.min_distance_mode
+        setOptions(values)
     }
 
     function addMeshes(meshes: File[]) {
