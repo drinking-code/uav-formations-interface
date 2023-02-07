@@ -1,11 +1,10 @@
 import {HTMLAttributes, useEffect, useState} from 'react'
-import {BufferGeometry, Euler, Object3D, Scene, SkinnedMesh, Vector3} from 'three'
-import {STLExporter} from 'three-stdlib'
+import {BufferGeometry, Euler, Object3D, Vector3} from 'three'
 import {Canvas} from '@react-three/fiber'
 import {OrbitControls} from '@react-three/drei'
 
 import ImportMeshes, {ImportMeshesPropsType} from './ImportMeshes'
-import {setMesh} from '../../server-communication'
+import {fetchFormation, setMesh, useServerData} from '../../server-communication'
 import stlFromMeshes from './stl-from-meshes'
 
 Object3D.DEFAULT_UP = new Vector3(0, 0, 1)
@@ -14,6 +13,7 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                                           ImportMeshesPropsType & HTMLAttributes<HTMLElement>) {
     const [target, setTarget] = useState<Object3D | null>(null)
     const [meshes, setMeshes] = useState<BufferGeometry[]>([])
+    const serverData = useServerData()
 
     const gridSize = 16
     const smallTileSize = .2
@@ -27,6 +27,11 @@ export default function ThreeViewport({newMeshFiles, ...props}:
         const stlString = stlFromMeshes(meshes)
         setMesh(stlString)
     }, [meshes])
+
+    useEffect(() => {
+        if (!serverData.initialized) return
+        fetchFormation()
+    }, [serverData])
 
     return <>
         <div {...props}>

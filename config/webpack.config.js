@@ -41,7 +41,6 @@ export default {
                 terserOptions: {
                     compress: {
                         arguments: true,
-                        booleans_as_integers: true,
                         drop_console: true,
                         ecma: '2015',
                         passes: 2,

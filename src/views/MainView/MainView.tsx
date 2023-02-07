@@ -5,13 +5,12 @@ import {ThreeViewport} from '../../components/ThreeViewport'
 import Sidebar from '../../components/Sidebar/Sidebar'
 
 import {setOptions} from '../../server-communication'
+import {PossibleInputValueType} from '../../server-communication/fetch-formation'
 
 import styles from './main-view.module.scss'
 
 export default function MainView() {
     const [newMeshFiles, setNewMeshFiles] = useState<File[]>([])
-
-    type PossibleInputValueType = string | number | _BestConversion<number, BestUnits> | boolean | undefined
 
     function handleValueChange(values: { [key: string]: PossibleInputValueType }) {
         // normalise length units to scale currently used in the viewport / by mesh
