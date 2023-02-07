@@ -36,7 +36,7 @@ router.get('/formation', async (req, res) => {
 
     scriptHandler(data, res)
 
-    res.status(http_code.not_implemented).end()
+    // res.status(http_code.not_implemented).end()
     cancelFormationRequestsFunctions.delete(cancelRequest)
 })
 

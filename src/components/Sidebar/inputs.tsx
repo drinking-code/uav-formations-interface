@@ -34,7 +34,7 @@ const inputs: {
 }, {
     type: NumberInput,
     name: 'uav_size',
-    defaultValue: '.25m',
+    defaultValue: '.1m',
     label: str('input-labels.UAVSize'),
 },], [{
     type: NumberInput,

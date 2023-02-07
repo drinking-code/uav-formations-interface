@@ -8,7 +8,7 @@ export type ImportMeshesPropsType = {
     newMeshFiles: File[]
 }
 
-export default function ImportMeshes({newMeshFiles, target, setTarget, meshes, setMeshes}:
+export default function ImportedMeshes({newMeshFiles, target, setTarget, meshes, setMeshes}:
                                          ImportMeshesPropsType &
                                          { target: Object3D | null, setTarget: Dispatch<SetStateAction<Object3D | null>> } &
                                          { meshes: BufferGeometry[], setMeshes: Dispatch<SetStateAction<BufferGeometry[]>> }) {
