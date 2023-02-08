@@ -69,7 +69,7 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
             <renderPass attach={'passes-0'} args={[state.scene, state.camera]} enabled={show}/>
             {/* @ts-ignore */}
             <unrealBloomPass attach={'passes-1'} threshold={1} strength={.7} radius={0.9}/>
-            {/* todo: strength adaptive (in relation to point distance, probably) */}
+            {/* todo: strength adaptive (in relation to point distance, probably, and size) */}
         </effectComposer>
     </>
 

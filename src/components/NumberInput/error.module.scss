@@ -15,6 +15,8 @@
   background: mix(red, #222, 40%);
   border-radius: v.$border-radius;
 
+  z-index: 100;
+
   transform-origin: top center;
   $transition: .8s cubic-bezier(.1, 0, 0, 1);
   $transition-out: 1.4s cubic-bezier(.8, 0, .9, 1);

@@ -36,6 +36,8 @@ export default function NumberInput(
     const [inputErrorMessage, setInputErrorMessage] = useState<null | string>(null)
     const [showInputError, setShowInputError] = useState<boolean>(false)
     const [valueBeforeFocus, setValueBeforeFocus] = useState(convertInputValue(defaultValue))
+    const unit = !noUnits && typeof valueBeforeFocus === 'string' &&
+        (valueBeforeFocus.match(/[^\d.,]+$/) as [string])[0]
 
     function focus(e: FocusEvent<HTMLInputElement>) {
         setValueBeforeFocus((e.target as HTMLInputElement).value)
@@ -73,7 +75,7 @@ export default function NumberInput(
                 if (noUnits) throw new Error('Input does not support units')
                 const resultJson = result.toJSON()
                 if (resultJson.value === 0) {
-                    return '0' + defaultUnit
+                    return '0' + (unit || defaultUnit)
                 }
                 const conversion = convert(resultJson.value, resultJson.unit).to('best')
                 conversion.quantity = round(conversion.quantity as number)
@@ -85,7 +87,7 @@ export default function NumberInput(
                         return round(roundedNumber * 100) + '%'
                     return roundedNumber
                 } else {
-                    return roundedNumber + defaultUnit
+                    return roundedNumber + (unit || defaultUnit)
                 }
             }
         } catch (err) {
