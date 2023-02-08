@@ -19,3 +19,6 @@ colorOverride: Override Colour
 solidColor: Solid Colour
 gradientColor: Gradient
 color: Colour
+
+meshMode: Mesh View
+formationMode: Formation View

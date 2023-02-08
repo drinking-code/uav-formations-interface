@@ -53,13 +53,13 @@ export default function ImportedMeshes({newMeshFiles, target, setTarget, meshes,
 
     // @ts-ignore
     return <>
-        {meshes.map(geometry =>
+        {/*{meshes.map(geometry =>
             <mesh geometry={geometry}
                   onClick={clickHandler}
                   key={geometry.id}>
                 <meshStandardMaterial side={DoubleSide}/>
             </mesh>
-        )}
+        )}*/}
         {target && <TransformControls object={target} mode={'translate'}/>}
     </>
 }

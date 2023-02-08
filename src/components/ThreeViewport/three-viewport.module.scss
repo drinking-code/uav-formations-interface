@@ -1,0 +1,30 @@
+.wrapper {
+  position: relative;
+}
+
+.viewToggle {
+  position: absolute;
+  left: 50%;
+  top: 1.5rem;
+  transform: translateX(-50%);
+
+  $size: 3.5rem;
+  $aspect-ratio: calc(7 / 4);
+  --width: calc(#{$size} * #{$aspect-ratio} * 2);
+  --height: #{$size};
+
+  z-index: 1;
+
+  .label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    font-size: .6rem;
+  }
+
+  .icon {
+    margin-bottom: .3rem;
+    font-size: 1.5rem;
+  }
+}

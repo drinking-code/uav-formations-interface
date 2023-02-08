@@ -1,4 +1,4 @@
-import {HTMLAttributes, SyntheticEvent, useState} from 'react'
+import {Dispatch, HTMLAttributes, SetStateAction, SyntheticEvent, useState} from 'react'
 import RoundDiv from 'react-round-div'
 
 import {createFakeSyntheticEvent} from '../../utils/fake-synthetic-event'
@@ -12,6 +12,8 @@ type ToggleInputPropsBaseType = {
     name?: string
     invert?: boolean
     onInput?: (e: SyntheticEvent<null, CustomEvent>) => void
+    state?: [boolean, Dispatch<SetStateAction<boolean>>]
+    className?: string
 }
 
 type CheckInputPropsType = {
@@ -28,14 +30,14 @@ export type ToggleInputPropsType =
     CheckInputPropsType | SwitchInputPropsType
 
 export default function ToggleInput(
-    {defaultValue = false, label, switchLabels, name, onInput, invert = false, ...props}:
+    {defaultValue = false, label, switchLabels, name, onInput, invert = false, state, ...props}:
         ToggleInputPropsType & Omit<HTMLAttributes<HTMLElement>, 'defaultValue'>
 ) {
     function xor(a: boolean, b: boolean): boolean {
         return Boolean(a !== b)
     }
 
-    const [checked, setChecked] = useState<boolean>(defaultValue)
+    const [checked, setChecked] = state ?? useState<boolean>(defaultValue)
 
     function setValue(newValue: typeof checked) {
         setChecked(newValue)
@@ -58,7 +60,7 @@ export default function ToggleInput(
 
     if (switchLabels) {
         return <>
-            <fieldset className={switchStyles.wrapper}>
+            <fieldset {...props} className={cl(switchStyles.wrapper, props.className)}>
                 <RoundDiv className={cl(switchStyles.selector, xor(checked, invert) && switchStyles.right)}/>
                 <label className={switchStyles.switchInput}>
                     <input type={'radio'} checked={xor(!checked, invert)} onChange={() => setValue(xor(false, invert))}
@@ -74,7 +76,7 @@ export default function ToggleInput(
         </>
     } else {
         return <>
-            <label className={checkStyles.checkInput}>
+            <label {...props} className={cl(checkStyles.checkInput, props.className)}>
                 <RoundDiv className={checkStyles.checkboxWrapper}>
                     <input type={'checkbox'} checked={xor(checked, invert)} onChange={() => setValue(!checked)}
                            className={checkStyles.checkbox}/>

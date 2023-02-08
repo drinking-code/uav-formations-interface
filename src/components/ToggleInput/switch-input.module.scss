@@ -3,9 +3,10 @@
 
 .wrapper {
   position: relative;
-  width: v.$width;
-  $height: v.$height * .8;
-  height: $height;
+  --width: #{v.$width};
+  width: var(--width);
+  --height: calc(#{v.$height} * .8);
+  height: var(--height);
 
   padding: 0;
   margin: 0 0 v.$ungrouped-margin;
@@ -28,8 +29,8 @@
     top: $padding;
     left: $padding;
 
-    width: calc(#{v.$width} / 2 - #{$padding});
-    height: calc(#{$height} - #{$padding} * 2);
+    width: calc(var(--width) / 2 - #{$padding});
+    height: calc(var(--height) - #{$padding} * 2);
 
     background: lighten(v.$background, 15%);
     border-radius: calc(#{v.$border-radius} - #{$padding});
@@ -38,7 +39,7 @@
     transition: transform .3s cubic-bezier(.4, 0, .1, 1);
 
     &.right {
-      transform: translateX(calc(#{v.$width} / 2 - #{$padding}));
+      transform: translateX(calc(var(--width) / 2 - #{$padding}));
     }
   }
 
