@@ -8,20 +8,28 @@
   --height: calc(#{v.$height} * .8);
   height: var(--height);
 
-  padding: 0;
   margin: 0 0 v.$ungrouped-margin;
-  background: v.$background;
 
-  appearance: none;
-  border: none;
   border-radius: v.$border-radius;
+  overflow: hidden;
 
-  display: grid;
-  grid: {
-    template: {
-      columns: 1fr 1fr;
+  .innerWrapper {
+    width: var(--width);
+    height: var(--height);
+    padding: 0;
+    margin: 0;
+
+    appearance: none;
+    border: none;
+    background: v.$background;
+
+    display: grid;
+    grid: {
+      template: {
+        columns: 1fr 1fr;
+      };
     };
-  };
+  }
 
   .selector {
     position: absolute;

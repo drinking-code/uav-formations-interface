@@ -60,19 +60,23 @@ export default function ToggleInput(
 
     if (switchLabels) {
         return <>
-            <fieldset {...props} className={cl(switchStyles.wrapper, props.className)}>
-                <RoundDiv className={cl(switchStyles.selector, xor(checked, invert) && switchStyles.right)}/>
-                <label className={switchStyles.switchInput}>
-                    <input type={'radio'} checked={xor(!checked, invert)} onChange={() => setValue(xor(false, invert))}
-                           className={switchStyles.radio}/>
-                    <span className={switchStyles.label}>{switchLabels[0]}</span>
-                </label>
-                <label className={switchStyles.switchInput}>
-                    <input type={'radio'} checked={xor(checked, invert)} onChange={() => setValue(xor(true, invert))}
-                           className={switchStyles.radio}/>
-                    <span className={switchStyles.label}>{switchLabels[1]}</span>
-                </label>
-            </fieldset>
+            <RoundDiv {...props} className={cl(switchStyles.wrapper, props.className)}>
+                <fieldset className={switchStyles.innerWrapper}>
+                    <RoundDiv className={cl(switchStyles.selector, xor(checked, invert) && switchStyles.right)}/>
+                    <label className={switchStyles.switchInput}>
+                        <input type={'radio'} checked={xor(!checked, invert)}
+                               onChange={() => setValue(xor(false, invert))}
+                               className={switchStyles.radio}/>
+                        <span className={switchStyles.label}>{switchLabels[0]}</span>
+                    </label>
+                    <label className={switchStyles.switchInput}>
+                        <input type={'radio'} checked={xor(checked, invert)}
+                               onChange={() => setValue(xor(true, invert))}
+                               className={switchStyles.radio}/>
+                        <span className={switchStyles.label}>{switchLabels[1]}</span>
+                    </label>
+                </fieldset>
+            </RoundDiv>
         </>
     } else {
         return <>
