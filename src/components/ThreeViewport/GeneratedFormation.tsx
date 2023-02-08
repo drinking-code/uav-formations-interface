@@ -3,14 +3,17 @@ import {HalfFloatType, RGBAFormat, WebGLRenderTarget} from 'three'
 import {EffectComposer, RenderPass, SMAAPass, UnrealBloomPass} from 'three-stdlib'
 import {extend, useFrame, useThree} from '@react-three/fiber'
 
-import {fetchFormation, useServerData} from '../../server-communication'
+import {fetchFormation, isInitialized, useServerDataMesh, useServerDataOptions} from '../../server-communication'
 
 extend({EffectComposer, RenderPass, SMAAPass, UnrealBloomPass})
 
 export default function GeneratedFormation({show = false}: { show: boolean }) {
-    const serverData = useServerData()
-    const [currentMesh, setCurrentMesh] = useState<string>(null!)
+    const serverDataMesh = useServerDataMesh()
+    const serverDataOptions = useServerDataOptions()
+    const initialized = isInitialized(serverDataMesh, serverDataOptions)
+
     const [points, setPoints] = useState<Array<[number, number, number]>>([])
+
     const state = useThree()
     const composer = useRef<EffectComposer<WebGLRenderTarget>>(null!)
     const [target] = useState(() => {
@@ -26,18 +29,12 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
         return t
     })
 
-    function addPoints(newPoints: typeof points) {
-        setPoints(currentPoints => [...currentPoints, ...newPoints])
-    }
-
-    function resetPoints() {
-        setPoints([])
-    }
+    const addPoints = (newPoints: typeof points) => setPoints(currentPoints => [...currentPoints, ...newPoints])
+    const resetPoints = () => setPoints([])
 
     useEffect(() => {
-        if (!serverData.initialized) return
-        if (currentMesh === serverData.mesh) return
-        setCurrentMesh(serverData.mesh)
+        if (!initialized) return
+        console.log(serverDataMesh, serverDataOptions)
         resetPoints()
         fetchFormation((receivedPointsString: string) => {
             addPoints(
@@ -48,7 +45,7 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
                     ) as Array<[number, number, number]>
             )
         })
-    }, [serverData])
+    }, [serverDataMesh, serverDataOptions])
 
     useEffect(() => {
         composer.current?.setSize(state.size.width, state.size.height)
@@ -64,16 +61,16 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
     return <>
         {show && points.map((point) =>
             <mesh position={point} key={point.join(',')}>
-                <sphereGeometry args={[serverData.options.uav_size as number / 2, 12, 8]}/>
+                <sphereGeometry args={[serverDataOptions.uav_size as number / 2, 12, 8]}/>
                 <meshStandardMaterial emissive={'#ffffff'} emissiveIntensity={4} toneMapped={false}/>
             </mesh>
         )}
-        {<effectComposer ref={composer} args={[state.gl, target]}>
+        <effectComposer ref={composer} args={[state.gl, target]}>
             <renderPass attach={'passes-0'} args={[state.scene, state.camera]} enabled={show}/>
             {/* @ts-ignore */}
             <unrealBloomPass attach={'passes-1'} threshold={1} strength={.7} radius={0.9}/>
             {/* todo: strength adaptive (in relation to point distance, probably) */}
-        </effectComposer>}
+        </effectComposer>
     </>
 
 }

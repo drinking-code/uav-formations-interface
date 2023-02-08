@@ -5,12 +5,12 @@ import {ThreeEvent} from '@react-three/fiber'
 import {TransformControls} from '@react-three/drei'
 
 export type ImportMeshesPropsType = {
-    show: boolean
     newMeshFiles: File[]
 }
 
 export default function ImportedMeshes({show, newMeshFiles, target, setTarget, meshes, setMeshes}:
                                            ImportMeshesPropsType &
+                                           { show?: boolean } &
                                            { target: Object3D | null, setTarget: Dispatch<SetStateAction<Object3D | null>> } &
                                            { meshes: BufferGeometry[], setMeshes: Dispatch<SetStateAction<BufferGeometry[]>> }) {
     const [meshFiles, setMeshFiles] = useState<File[]>([])

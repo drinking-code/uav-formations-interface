@@ -24,35 +24,39 @@ export const updateDataEventTarget = new EventTarget()
 
 // this is so that data from events on "updateDataEventTarget" that happened prior to the hook call
 // are reflected in the hook's (initial) data
-let meshOutsideHook: string = null!
-let optionsOutsideHook: { [key: string]: PossibleInputValueType } = {}
-const isInitialized = (
-    mesh: typeof meshOutsideHook,
-    options: typeof optionsOutsideHook,
+let meshOutsideOfHook: string = null!
+let optionsOutsideOfHook: { [key: string]: PossibleInputValueType } = {}
+export const isInitialized = (
+    mesh: typeof meshOutsideOfHook,
+    options: typeof optionsOutsideOfHook,
     initialized: boolean = false
 ): boolean => initialized || (!!mesh && Object.keys(options).length > 0)
 
-updateDataEventTarget.addEventListener('mesh', ((e: CustomEvent) => meshOutsideHook = e.detail) as EventListener)
-updateDataEventTarget.addEventListener('options', ((e: CustomEvent) => optionsOutsideHook = e.detail) as EventListener)
+updateDataEventTarget.addEventListener('mesh', ((e: CustomEvent) => meshOutsideOfHook = e.detail) as EventListener)
+updateDataEventTarget.addEventListener('options', ((e: CustomEvent) => optionsOutsideOfHook = e.detail) as EventListener)
 
-export function useServerData() {
-    const [mesh, setMesh] = useState<typeof meshOutsideHook>(meshOutsideHook)
-    const [options, setOptions] = useState<typeof optionsOutsideHook>(optionsOutsideHook)
-    const [initialized, setInitialized] = useState<boolean>(isInitialized(mesh, options))
+function makeServerDataHook<T>(eventName: string, defaultValue: T) {
+    return function useServerData() {
+        const [data, setData] = useState<T>(null!)
 
-    useEffect(() => {
-        const checkInitializedState = () => setInitialized(isInitialized(mesh, options, initialized))
-        const handleNewMeshData = (e: CustomEvent) => (setMesh(e.detail), checkInitializedState())
-        const handleNewOptions = (e: CustomEvent) => (setOptions(e.detail), checkInitializedState())
+        useEffect(() => {
+            setData(defaultValue)
+            const handleNewData = (e: CustomEvent) => setData(e.detail)
+            updateDataEventTarget.addEventListener(eventName, handleNewData as EventListener)
 
-        updateDataEventTarget.addEventListener('mesh', handleNewMeshData as EventListener)
-        updateDataEventTarget.addEventListener('options', handleNewOptions as EventListener)
+            return () => {
+                updateDataEventTarget.removeEventListener(eventName, handleNewData as EventListener)
+            }
+        }, [])
 
-        return () => {
-            updateDataEventTarget.removeEventListener('mesh', handleNewMeshData as EventListener)
-            updateDataEventTarget.removeEventListener('options', handleNewOptions as EventListener)
-        }
-    })
-
-    return {mesh, options, initialized}
+        return data
+    }
 }
+
+// () => makeServerDataHook()() instead of makeServerDataHook()
+// because the most recent value of "meshOutsideOfHook" should be used
+export const useServerDataMesh = () =>
+    makeServerDataHook<typeof meshOutsideOfHook>('mesh', meshOutsideOfHook)()
+
+export const useServerDataOptions = () =>
+    makeServerDataHook<typeof optionsOutsideOfHook>('options', optionsOutsideOfHook)()

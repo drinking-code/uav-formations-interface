@@ -31,7 +31,14 @@ export function scriptHandler({mesh, options}, res) {
     if (mesh.replace(/(end)?solid( .+)/gm, '').trim() === '')
         res.end()
 
-    const pythonProcess = child_process.spawn(pythonBin, [pythonEntry, mesh], {cwd: pythonCwd})
+    const scriptOptions = JSON.stringify({
+        max_amount: options.max_amount,
+        min_distance: options.min_distance,
+        sharpness_threshold: options.sharp_threshold,
+        features_only: options.features_only,
+    })
+
+    const pythonProcess = child_process.spawn(pythonBin, [pythonEntry, mesh, scriptOptions], {cwd: pythonCwd})
     pythonProcess.stdout.on('data', data => {
         const points = data.toString()
         res.write(points)
