@@ -20,7 +20,8 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                                           ImportMeshesPropsType & HTMLAttributes<HTMLElement>) {
     const [target, setTarget] = useState<Object3D | null>(null)
     const [meshes, setMeshes] = useState<BufferGeometry[]>([])
-    const formationMode = useState<boolean>(false);
+    const formationModeState = useState<boolean>(false)
+    const [formationMode] = formationModeState
 
     const gridSize = 16
     const smallTileSize = .2
@@ -37,7 +38,7 @@ export default function ThreeViewport({newMeshFiles, ...props}:
 
     return <>
         <div {...props} className={cl(styles.wrapper, props.className)}>
-            <ToggleInput state={formationMode} className={styles.viewToggle} switchLabels={[
+            <ToggleInput state={formationModeState} className={styles.viewToggle} switchLabels={[
                 <span className={styles.label}>
                     <Icon icon={'box'} className={styles.icon}/>
                     {str('input-labels.meshMode')}
@@ -51,7 +52,7 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                 fov: 40,
                 position: new Vector3(...([-6, 15, 8].map(v => v * .8))),
             }} onPointerMissed={() => setTarget(null)}>
-                <color attach="background" args={['#222']}/>
+                {formationMode && <color attach="background" args={['#222']}/>}
                 <gridHelper args={[gridSize, gridSize / smallTileSize, thickLinesColor, thinLinesColor]}
                             rotation={rotate90AlongX}/>
                 <gridHelper args={[gridSize, gridSize / bigTileSize, thickLinesColor, thickLinesColor]}
@@ -60,10 +61,10 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                 <directionalLight position={[-2, 2, -2]} intensity={.1}/>
                 <directionalLight position={[2, -2, -2]} intensity={.2}/>
                 <directionalLight position={[-2, -2, 2]} intensity={.3}/>
-                <ImportedMeshes newMeshFiles={newMeshFiles}
+                <ImportedMeshes show={!formationMode} newMeshFiles={newMeshFiles}
                                 target={target} setTarget={setTarget}
                                 meshes={meshes} setMeshes={setMeshes}/>
-                <GeneratedFormation/>
+                <GeneratedFormation show={formationMode}/>
                 <OrbitControls makeDefault enableDamping={false}/>
             </Canvas>
         </div>

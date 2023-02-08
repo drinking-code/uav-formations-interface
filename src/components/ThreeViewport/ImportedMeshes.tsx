@@ -5,13 +5,14 @@ import {ThreeEvent} from '@react-three/fiber'
 import {TransformControls} from '@react-three/drei'
 
 export type ImportMeshesPropsType = {
+    show: boolean
     newMeshFiles: File[]
 }
 
-export default function ImportedMeshes({newMeshFiles, target, setTarget, meshes, setMeshes}:
-                                         ImportMeshesPropsType &
-                                         { target: Object3D | null, setTarget: Dispatch<SetStateAction<Object3D | null>> } &
-                                         { meshes: BufferGeometry[], setMeshes: Dispatch<SetStateAction<BufferGeometry[]>> }) {
+export default function ImportedMeshes({show, newMeshFiles, target, setTarget, meshes, setMeshes}:
+                                           ImportMeshesPropsType &
+                                           { target: Object3D | null, setTarget: Dispatch<SetStateAction<Object3D | null>> } &
+                                           { meshes: BufferGeometry[], setMeshes: Dispatch<SetStateAction<BufferGeometry[]>> }) {
     const [meshFiles, setMeshFiles] = useState<File[]>([])
 
     const loaders = {
@@ -51,15 +52,16 @@ export default function ImportedMeshes({newMeshFiles, target, setTarget, meshes,
         setMeshFiles([...meshFiles, ...newMeshFiles])
     }, [newMeshFiles])
 
-    // @ts-ignore
-    return <>
-        {/*{meshes.map(geometry =>
-            <mesh geometry={geometry}
-                  onClick={clickHandler}
-                  key={geometry.id}>
-                <meshStandardMaterial side={DoubleSide}/>
-            </mesh>
-        )}*/}
-        {target && <TransformControls object={target} mode={'translate'}/>}
-    </>
+    if (show)
+        return <>
+            {meshes.map(geometry =>
+                <mesh geometry={geometry}
+                      onClick={clickHandler}
+                      key={geometry.id}>
+                    <meshStandardMaterial side={DoubleSide}/>
+                </mesh>
+            )}
+            {/*todo: {target && <TransformControls object={target} mode={'translate'}/>}*/}
+        </>
+    else return <></>
 }

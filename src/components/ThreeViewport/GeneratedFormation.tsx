@@ -7,7 +7,7 @@ import {fetchFormation, useServerData} from '../../server-communication'
 
 extend({EffectComposer, RenderPass, SMAAPass, UnrealBloomPass})
 
-export default function GeneratedFormation() {
+export default function GeneratedFormation({show = false}: { show: boolean }) {
     const serverData = useServerData()
     const [currentMesh, setCurrentMesh] = useState<string>(null!)
     const [points, setPoints] = useState<Array<[number, number, number]>>([])
@@ -56,21 +56,24 @@ export default function GeneratedFormation() {
     }, [state])
 
     useFrame(() => {
-        composer.current?.render()
-    }, 1)
+        if (show) {
+            composer.current?.render()
+        }
+    }, show ? 1 : 0)
 
     return <>
-        {points.map((point) =>
+        {show && points.map((point) =>
             <mesh position={point} key={point.join(',')}>
                 <sphereGeometry args={[serverData.options.uav_size as number / 2, 12, 8]}/>
                 <meshStandardMaterial emissive={'#ffffff'} emissiveIntensity={4} toneMapped={false}/>
             </mesh>
         )}
-        <effectComposer ref={composer} args={[state.gl, target]}>
-            <renderPass attach={'passes-0'} args={[state.scene, state.camera]}/>
+        {<effectComposer ref={composer} args={[state.gl, target]}>
+            <renderPass attach={'passes-0'} args={[state.scene, state.camera]} enabled={show}/>
             {/* @ts-ignore */}
             <unrealBloomPass attach={'passes-1'} threshold={1} strength={.7} radius={0.9}/>
             {/* todo: strength adaptive (in relation to point distance, probably) */}
-        </effectComposer>
+        </effectComposer>}
     </>
+
 }
