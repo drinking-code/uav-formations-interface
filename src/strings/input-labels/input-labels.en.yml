@@ -17,7 +17,8 @@ illuminationDirectionalityBleed: Illumination Directionality Bleed
 
 colorOverride: Override Colour
 solidColor: Solid Colour
-gradientColor: Gradient
+linearGradientColor: Linear Gradient
+radialGradientColor: Radial Gradient
 color: Colour
 
 meshMode: Mesh View

@@ -2,10 +2,16 @@ import {MeshInput} from '../MeshInput'
 import {NumberInput} from '../NumberInput'
 import {ToggleInput} from '../ToggleInput'
 import {ColorInput} from '../ColorInput'
+import {SelectInput} from '../SelectInput'
 
 import str from '../../strings'
 
-export type AnyInputType = typeof MeshInput | typeof NumberInput | typeof ToggleInput | typeof ColorInput
+export type AnyInputType =
+    typeof MeshInput
+    | typeof NumberInput
+    | typeof ToggleInput
+    | typeof ColorInput
+    | typeof SelectInput
 const inputs: {
     type: AnyInputType
     name: string,
@@ -13,7 +19,9 @@ const inputs: {
     alwaysRoundToPlace?: number,
     label?: string | [string, string],
     defaultValue?: number | string | boolean,
+    options?: { [key: string]: string },
     invert?: boolean,
+    disabled?: string | boolean,
 }[][] = [[{
     type: NumberInput,
     name: 'max_amount',
@@ -51,6 +59,7 @@ const inputs: {
     type: NumberInput,
     name: 'file_brightness',
     defaultValue: '50%',
+    disabled: 'features_only',
     label: str('input-labels.surfaceFillAmount'),
 },], [{
     type: ToggleInput,
@@ -61,6 +70,7 @@ const inputs: {
     type: NumberInput,
     name: 'illumination_directionality_bleed',
     defaultValue: '0%',
+    disabled: 'illumination_directionality',
     label: str('input-labels.illuminationDirectionalityBleed'),
 },], [{
     type: ToggleInput,
@@ -68,14 +78,20 @@ const inputs: {
     defaultValue: false,
     label: str('input-labels.colorOverride'),
 }, {
-    type: ToggleInput,
+    type: SelectInput,
     name: 'color_mode',
-    defaultValue: true,
-    label: [str('input-labels.solidColor'), str('input-labels.gradientColor'),],
+    defaultValue: 'solid',
+    disabled: 'override_color',
+    options: {
+        solid: str('input-labels.solidColor'),
+        'linear_gradient': str('input-labels.linearGradientColor'),
+        'radial_gradient': str('input-labels.radialGradientColor'),
+    },
 }, {
     type: ColorInput,
     name: 'color_1',
     defaultValue: 'white',
+    disabled: 'override_color',
     label: str('input-labels.color'),
 },],]
 

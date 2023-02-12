@@ -20,13 +20,23 @@ export type NumberInputPropsType = {
     name?: string
     noUnits?: boolean
     onInput?: (e: SyntheticEvent<null, CustomEvent>) => void
+    disabled?: boolean
 }
 
 const defaultUnit = 'cm'
 
 export default function NumberInput(
-    {defaultValue = 0, step: stepOrUndefined, alwaysRoundToPlace, label, name, noUnits, onInput, ...props}:
-        NumberInputPropsType & HTMLAttributes<HTMLElement>
+    {
+        defaultValue = 0,
+        step: stepOrUndefined,
+        alwaysRoundToPlace,
+        label,
+        name,
+        noUnits,
+        onInput,
+        disabled = false,
+        ...props
+    }: NumberInputPropsType & HTMLAttributes<HTMLElement>
 ) {
     const isPercentage = typeof defaultValue === 'string' && defaultValue.endsWith('%')
     if (isPercentage) noUnits = true
@@ -131,11 +141,11 @@ export default function NumberInput(
 
     return <>
         {label && <label className={styles.label}>{label}</label>}
-        <RoundDiv {...props} className={cl(props.className, styles.numberInput)}
+        <RoundDiv {...props} className={cl(props.className, styles.numberInput, disabled && styles.disabled)}
                   id={cl(props.id, label && kebabCase(label))}>
             <div className={styles.innerWrapper} ref={innerWrapper}>
                 <button className={cl(styles.button, styles.subtract)} onClick={() => offsetValue(-step)}>-</button>
-                <input className={cl(styles.input)} type={'text'} defaultValue={valueBeforeFocus}
+                <input className={cl(styles.input)} type={'text'} defaultValue={valueBeforeFocus} disabled={disabled}
                        onFocus={focus} onBlur={blur} onKeyDown={blurOnEnter} ref={input} name={name}/>
                 <button className={cl(styles.button, styles.add)} onClick={() => offsetValue(step)}>+</button>
             </div>

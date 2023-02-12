@@ -13,6 +13,7 @@ import styles from './sidebar.module.scss'
 import {cl} from '../../utils/class-names'
 import {parseNumberString} from '../../utils/parse-number-string'
 import str from '../../strings'
+import {SelectInputPropsType} from '../SelectInput'
 
 type inputDataType = typeof inputs[number][number]
 type inputNameType = inputDataType['name']
@@ -56,7 +57,7 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
     }
 
     type GenericInputPropsType =
-        MeshInputPropsType | NumberInputPropsType | ToggleInputPropsType | ColorInputPropsType
+        MeshInputPropsType | NumberInputPropsType | ToggleInputPropsType | ColorInputPropsType | SelectInputPropsType
 
     return <>
         <div {...props} className={cl(styles.sidebar, props.className)}>
@@ -73,6 +74,7 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
                         step?: number,
                         alwaysRoundToPlace?: number
                         invert?: boolean
+                        options?: { [key: string]: string }
                     } /* ???? */ = {
                         name: input.name,
                         defaultValue: input.defaultValue,
@@ -81,7 +83,8 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
                         noUnits: InputComponent === NumberInput
                             ? typeof input.defaultValue === 'number'
                             : undefined,
-                        invert: input.invert
+                        invert: input.invert,
+                        options: input.options,
                     }
                     if (input.label) {
                         if (typeof input.label === 'string')

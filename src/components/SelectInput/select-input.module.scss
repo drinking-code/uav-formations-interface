@@ -1,0 +1,56 @@
+@use 'src/utils/input-variables' as v;
+
+.label {
+  @extend %label;
+}
+
+.selectInput {
+  position: relative;
+  width: v.$width;
+  height: v.$height;
+
+  margin-bottom: v.$ungrouped-margin;
+
+  background: v.$background;
+  color: currentColor;
+  border-radius: v.$border-radius;
+
+  overflow: hidden;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: v.$height;
+    height: v.$height;
+
+    box-sizing: border-box;
+
+    background: url('../../icons/select-up-down.svg') no-repeat;
+    border: calc(#{v.$height} / 4) solid transparent;
+    opacity: .5;
+  }
+
+  .innerWrapper {
+    position: relative;
+    width: v.$width;
+    height: v.$height;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+
+  .select {
+    width: 100%;
+    padding-left: v.$border-radius;
+    box-sizing: border-box;
+
+    appearance: none;
+    background: none;
+    border: none;
+    color: currentColor;
+  }
+}
