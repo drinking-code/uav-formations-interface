@@ -9,7 +9,6 @@ export type ButtonPropsType = {
 }
 
 export default function Button({label, ...props}: ButtonPropsType & HTMLAttributes<HTMLElement>) {
-    console.log(label)
     return <>
         <RoundDiv {...props} className={cl(props.className, styles.buttonWrapper)}>
             <button className={styles.button}>

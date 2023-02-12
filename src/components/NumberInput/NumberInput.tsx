@@ -139,8 +139,6 @@ export default function NumberInput(
         onInput(customSyntheticInputEvent)
     }
 
-    console.log(disabled)
-
     return <>
         {label && <label className={cl(styles.label, disabled && styles.disabled)}>{label}</label>}
         <RoundDiv {...props} className={cl(props.className, styles.numberInput, disabled && styles.disabled)}

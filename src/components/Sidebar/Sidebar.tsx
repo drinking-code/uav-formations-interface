@@ -65,8 +65,6 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
     type GenericInputPropsType =
         MeshInputPropsType | NumberInputPropsType | ToggleInputPropsType | ColorInputPropsType | SelectInputPropsType
 
-    console.log(values)
-
     return <>
         <div {...props} className={cl(styles.sidebar, props.className)}>
             <InputGroup>
@@ -104,7 +102,6 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
                     if (typeof input.disabled === 'boolean') {
                         props.disabled = input.disabled
                     } else if (typeof input.disabled === 'string') {
-                        console.log(input.disabled, values[input.disabled], inputsInverted[input.disabled])
                         props.disabled = !(values[input.disabled] as boolean !== inputsInverted[input.disabled])
                     }
                     for (const propsKey in props) {

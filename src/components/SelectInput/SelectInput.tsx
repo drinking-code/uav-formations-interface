@@ -20,7 +20,6 @@ export default function SelectInput({options, defaultValue, label, name, onInput
     const input = useRef<HTMLSelectElement>(null!)
 
     function fireOnInput() {
-        console.log('input')
         if (!onInput) return
         const inputElement = input.current
         if (!inputElement) return
