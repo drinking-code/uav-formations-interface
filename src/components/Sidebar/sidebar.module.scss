@@ -6,4 +6,11 @@ $padding-left-right: 2rem;
 
   overflow-y: auto;
   user-select: none;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.exportButton {
+  margin-top: auto;
 }

@@ -23,3 +23,5 @@ color: Colour
 
 meshMode: Mesh View
 formationMode: Formation View
+
+exportButton: Export to File (.pcd)

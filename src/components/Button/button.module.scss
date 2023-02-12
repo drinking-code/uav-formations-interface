@@ -1,0 +1,29 @@
+@use 'src/utils/input-variables' as v;
+
+.buttonWrapper {
+  width: v.$width;
+  height: v.$button-height;
+
+  background: none;
+  border-radius: v.$border-radius;
+  border: 2px solid v.$background;
+  font-size: 14px;
+
+  transition: background .3s ease;
+
+  &:hover {
+    background: v.$background;
+  }
+
+  .button {
+    width: v.$width;
+    height: v.$button-height;
+
+    appearance: none;
+    border: none;
+    background: none;
+    color: currentColor;
+
+    cursor: pointer;
+  }
+}

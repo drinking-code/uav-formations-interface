@@ -14,6 +14,7 @@ import {cl} from '../../utils/class-names'
 import {parseNumberString} from '../../utils/parse-number-string'
 import str from '../../strings'
 import {SelectInputPropsType} from '../SelectInput'
+import Button from '../Button/Button'
 
 type inputDataType = typeof inputs[number][number]
 type inputNameType = inputDataType['name']
@@ -113,6 +114,7 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
                     return <InputComponent key={input.name} {...props} onInput={handleInputs}/>
                 })}
             </InputGroup>)}
+            <Button label={str('input-labels.exportButton')} className={styles.exportButton}/>
         </div>
     </>
 }

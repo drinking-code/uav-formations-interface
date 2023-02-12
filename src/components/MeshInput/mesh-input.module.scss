@@ -8,7 +8,7 @@
 
 .meshInput {
   width: v.$width;
-  $height: 2.5rem;
+  $height: v.$button-height;
   height: $height;
 
   margin-bottom: v.$ungrouped-margin;
