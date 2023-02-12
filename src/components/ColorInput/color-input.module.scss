@@ -4,6 +4,10 @@
   @extend %label;
 }
 
+.disabled {
+  @extend %disabled;
+}
+
 .colorInput {
   width: v.$width;
   height: v.$height;

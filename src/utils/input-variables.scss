@@ -9,6 +9,11 @@ $label-indent: calc(#{$border-radius} * 1 / 3);
 $background: #444;
 $background-active: #555;
 
+%disabled {
+  pointer-events: none;
+  opacity: .6;
+}
+
 %label {
   display: block;
   margin-bottom: .5em;
@@ -17,4 +22,8 @@ $background-active: #555;
   font-size: 12px;
   letter-spacing: .02em;
   opacity: .6;
+
+  &%disabled {
+    opacity: .6 * .6;
+  }
 }

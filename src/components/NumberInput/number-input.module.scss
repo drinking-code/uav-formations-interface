@@ -4,6 +4,10 @@
   @extend %label;
 }
 
+.disabled {
+  @extend %disabled;
+}
+
 .numberInput {
   width: v.$width;
   height: v.$height;
@@ -20,11 +24,6 @@
 
   &.focus {
     background: v.$background-active;
-  }
-
-  &.disabled {
-    pointer-events: none;
-    opacity: .6;
   }
 
   .innerWrapper {

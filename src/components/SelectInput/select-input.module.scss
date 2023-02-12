@@ -4,6 +4,10 @@
   @extend %label;
 }
 
+.disabled {
+  @extend %disabled;
+}
+
 .selectInput {
   position: relative;
   width: v.$width;

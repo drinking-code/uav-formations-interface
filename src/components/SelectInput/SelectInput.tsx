@@ -12,9 +12,10 @@ export type SelectInputPropsType = {
     label?: string
     name?: string
     onInput?: (e: SyntheticEvent<null, CustomEvent>) => void
+    disabled?: boolean
 }
 
-export default function SelectInput({options, defaultValue, label, name, onInput, ...props}:
+export default function SelectInput({options, defaultValue, label, name, onInput, disabled = false, ...props}:
                                         SelectInputPropsType & HTMLAttributes<HTMLElement>) {
     const input = useRef<HTMLSelectElement>(null!)
 
@@ -36,10 +37,12 @@ export default function SelectInput({options, defaultValue, label, name, onInput
     }
 
     return <>
-        {label && <label className={styles.label}>{label}</label>}
-        <RoundDiv {...props} className={cl(props.className, styles.selectInput)} id={cl(label && kebabCase(label))}>
+        {label && <label className={cl(styles.label, disabled && styles.disabled)}>{label}</label>}
+        <RoundDiv {...props} className={cl(props.className, styles.selectInput, disabled && styles.disabled)}
+                  id={cl(label && kebabCase(label))}>
             <div className={styles.innerWrapper}>
-                <select className={styles.select} onInput={fireOnInput} ref={input} defaultValue={defaultValue}>
+                <select className={styles.select} onInput={fireOnInput} ref={input} defaultValue={defaultValue}
+                        disabled={disabled}>
                     {Array.from(Object.entries(options)).map(([key, label]) =>
                         <option value={key} key={key}>
                             {label}

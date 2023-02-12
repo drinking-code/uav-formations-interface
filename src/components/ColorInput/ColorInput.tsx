@@ -12,15 +12,16 @@ export type ColorInputPropsType = {
     label?: string
     name?: string
     defaultValue: string
+    disabled?: boolean
 }
 
-export default function ColorInput({label, defaultValue, name, ...props}:
+export default function ColorInput({label, defaultValue, name, disabled = false, ...props}:
                                        ColorInputPropsType & HTMLAttributes<HTMLElement>) {
     const [color, setColor] = useState(toHexColor(defaultValue))
 
     return <>
-        {label && <label className={styles.label}>{label}</label>}
-        <RoundDiv {...props} className={cl(props.className, styles.colorInput)}>
+        {label && <label className={cl(styles.label, disabled && styles.disabled)}>{label}</label>}
+        <RoundDiv {...props} className={cl(props.className, styles.colorInput, disabled && styles.disabled)}>
             <div className={styles.innerWrapper}>
                 <RoundDiv className={styles.swatch} style={{'--color': color}}/>
                 <span>{color}</span>

@@ -25,6 +25,11 @@ type SidebarPropsType = {
 } & HTMLAttributes<HTMLElement>
 
 export default function Sidebar({handleValueChange, addMeshes, ...props}: SidebarPropsType) {
+    const inputsInverted = Object.fromEntries(
+        inputs.flat()
+            .filter(input => input.type === ToggleInput)
+            .map(input => [input.name, input.invert ?? false])
+    )
     const [values, setValues] = useState(
         Object.fromEntries(inputs.flat().map(input =>
             [input.name, input.type === NumberInput
@@ -37,9 +42,9 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
 
     function handleInputs(e: SyntheticEvent<null, CustomEvent>) {
         const data = e.nativeEvent.detail
-        setValues(currentValues => {
-            currentValues[data.target.name] = data.target.value
-            return currentValues
+        setValues({
+            ...values,
+            [data.target.name]: data.target.value
         })
         if (handleValueChange)
             handleValueChange(values)
@@ -59,6 +64,8 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
     type GenericInputPropsType =
         MeshInputPropsType | NumberInputPropsType | ToggleInputPropsType | ColorInputPropsType | SelectInputPropsType
 
+    console.log(values)
+
     return <>
         <div {...props} className={cl(styles.sidebar, props.className)}>
             <InputGroup>
@@ -72,9 +79,10 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
                         defaultValue?: string | number | boolean,
                         noUnits?: boolean,
                         step?: number,
-                        alwaysRoundToPlace?: number
-                        invert?: boolean
-                        options?: { [key: string]: string }
+                        alwaysRoundToPlace?: number,
+                        invert?: boolean,
+                        options?: { [key: string]: string },
+                        disabled?: boolean,
                     } /* ???? */ = {
                         name: input.name,
                         defaultValue: input.defaultValue,
@@ -91,6 +99,12 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
                             props.label = input.label
                         else if (Array.isArray(input.label))
                             (props as ToggleInputPropsType).switchLabels = input.label
+                    }
+                    if (typeof input.disabled === 'boolean') {
+                        props.disabled = input.disabled
+                    } else if (typeof input.disabled === 'string') {
+                        console.log(input.disabled, values[input.disabled], inputsInverted[input.disabled])
+                        props.disabled = !(values[input.disabled] as boolean !== inputsInverted[input.disabled])
                     }
                     for (const propsKey in props) {
                         if (props[propsKey as keyof typeof props] === undefined)
