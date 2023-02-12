@@ -1,9 +1,10 @@
 import {useEffect, useState} from 'react'
 import {_BestConversion, BestUnits} from 'convert'
 
-export default async function fetchFormation(callback: (chunk: string) => void) {
+export default async function fetchFormation(callback: (chunk: string) => void, signal?: AbortSignal) {
     await fetch('/formation', {
         method: 'get',
+        signal: signal,
     }).then(res => {
         if (!res.body) return
         const reader = res.body.getReader()

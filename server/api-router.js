@@ -34,7 +34,7 @@ router.get('/formation', async (req, res) => {
     if (!data.mesh || !data.options)
         res.status(http_code.conflict).end()
 
-    scriptHandler(data, res)
+    scriptHandler(data, req, res)
 
     // res.status(http_code.not_implemented).end()
     cancelFormationRequestsFunctions.delete(cancelRequest)

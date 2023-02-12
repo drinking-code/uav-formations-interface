@@ -34,8 +34,9 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
 
     useEffect(() => {
         if (!initialized) return
-        console.log(serverDataMesh, serverDataOptions)
         resetPoints()
+        const controller = new AbortController()
+        const signal = controller.signal
         fetchFormation((receivedPointsString: string) => {
             addPoints(
                 receivedPointsString.split("\n")
@@ -44,7 +45,10 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
                         .map(coordinateString => Number(coordinateString))
                     ) as Array<[number, number, number]>
             )
-        })
+        }, signal)
+        return () => {
+            controller.abort()
+        }
     }, [serverDataMesh, serverDataOptions])
 
     useEffect(() => {

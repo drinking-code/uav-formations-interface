@@ -34,12 +34,12 @@ const inputs: {
 }, {
     type: NumberInput,
     name: 'uav_size',
-    defaultValue: '.1m',
+    defaultValue: '.07m',
     label: str('input-labels.UAVSize'),
 },], [{
     type: NumberInput,
     name: 'sharp_threshold',
-    defaultValue: '120deg',
+    defaultValue: '140deg',
     label: str('input-labels.sharpnessThreshold'),
 },], [{
     type: ToggleInput,

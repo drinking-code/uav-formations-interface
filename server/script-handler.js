@@ -26,7 +26,7 @@ const pythonBin = path.join(pythonCwd, 'venv', 'bin', 'python')
 /**
  * Starts script with given mesh and options, and streams results to client
  * */
-export function scriptHandler({mesh, options}, res) {
+export function scriptHandler({mesh, options}, req, res) {
     // mesh is empty -> no points
     if (mesh.replace(/(end)?solid( .+)/gm, '').trim() === '')
         res.end()
@@ -39,6 +39,14 @@ export function scriptHandler({mesh, options}, res) {
     })
 
     const pythonProcess = child_process.spawn(pythonBin, [pythonEntry, mesh, scriptOptions], {cwd: pythonCwd})
+    res.on('close', () => {
+        console.log('close response')
+        pythonProcess.kill('SIGINT')
+    })
+    req.on('close', () => {
+        console.log('close request')
+        pythonProcess.kill('SIGINT')
+    })
     pythonProcess.stdout.on('data', data => {
         const points = data.toString()
         res.write(points)
