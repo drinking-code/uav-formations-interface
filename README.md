@@ -9,10 +9,17 @@ accompanying Python script(s).
 - Node.js 18 with npm
 - An up-to-date browser
 - [The repository with the Python script(s)](https://github.com/drinking-code/uav-formations-for-volumetric-displays-from-polygon-meshes)
+- Python 3.11
 
 ## Getting started
 
-First, install the dependencies:
+In the other repository, create a venv:
+
+```shell
+python3.11 -m venv venv
+```
+
+In this repository, install the dependencies:
 
 ```shell
 npm i
