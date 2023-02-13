@@ -19,6 +19,12 @@ In the other repository, create a venv:
 python3.11 -m venv venv
 ```
 
+Install the other repository's dependencies (after activating the venv):
+
+```shell
+pip install -r requirements.txt
+```
+
 In this repository, install the dependencies:
 
 ```shell
