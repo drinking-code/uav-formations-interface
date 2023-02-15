@@ -1,27 +1,12 @@
-import path from 'path'
-import fs from 'fs'
 import child_process from 'child_process'
 
+import chalk from 'chalk'
+
 import http_code from './readable-error-codes.js'
+import {pythonBin, pythonCwd, pythonMainScript} from './ensure-scripts.js'
+import {FormationCache} from './formation-cache.js'
 
-const pythonRepo = 'https://github.com/drinking-code/uav-formations-for-volumetric-displays-from-polygon-meshes'
-let providedPath = process.argv[2]
-if (!providedPath) {
-    console.error(`Please provide the path to \`main.py\` as an argument (from ${pythonRepo})`)
-    process.exit(1)
-}
-if (providedPath.startsWith('~'))
-    providedPath = path.join(process.env.HOME, providedPath.replace('~', ''))
-const pythonEntry = path.resolve(providedPath)
-if (!fs.existsSync(pythonEntry)) {
-    console.error(`Incorrect path to \`main.py\`:`)
-    console.log(pythonEntry)
-    process.exit(1)
-}
-
-const pythonCwd = path.dirname(pythonEntry)
-
-const pythonBin = path.join(pythonCwd, 'venv', 'bin', 'python')
+const memCache = new FormationCache()
 
 /**
  * Starts script with given mesh and options, and streams results to client
@@ -31,30 +16,36 @@ export function scriptHandler({mesh, options}, req, res) {
     if (mesh.replace(/(end)?solid( .+)/gm, '').trim() === '')
         res.end()
 
-    const scriptOptions = JSON.stringify({
+    const optionsForMainScript = {
         max_amount: options.max_amount,
         min_distance: options.min_distance,
         sharpness_threshold: options.sharp_threshold,
         features_only: options.features_only,
-    })
+    }
 
-    const pythonProcess = child_process.spawn(pythonBin, [pythonEntry, mesh, scriptOptions], {cwd: pythonCwd})
-    res.on('close', () => pythonProcess.kill('SIGINT'))
-    req.on('close', () => pythonProcess.kill('SIGINT'))
-    pythonProcess.stdout.on('data', data => {
+    const pythonMainProcess = child_process.spawn(pythonBin, [pythonMainScript, mesh, JSON.stringify(optionsForMainScript)], {cwd: pythonCwd})
+    res.on('close', () => pythonMainProcess.kill('SIGINT'))
+    req.on('close', () => pythonMainProcess.kill('SIGINT'))
+    pythonMainProcess.stdout.on('data', data => {
         const points = data.toString()
         res.write(points)
+        memCache.addPoint(mesh, optionsForMainScript, ...points.split("\n"))
     })
-    pythonProcess.stderr.on('data', data => {
-        console.log('stderr: ' + data.toString().replace(/\n$/, ''))
-    })
+    if (process.env.NODE_ENV === 'development')
+        pythonMainProcess.stderr.on('data', data => {
+            console.error(
+                chalk.bgRed.hex('#ddd')(' ERROR (Python script) '),
+                data.toString().replace(/\n$/, '')
+            )
+        })
 
     let resolve
     const pythonProcessPromise = new Promise(res => resolve = res)
-    pythonProcess.on('exit', (code) => {
+    pythonMainProcess.on('exit', (code) => {
         if (code !== 0) {
             res.status(http_code.internal_server_error)
         }
+        memCache.setComplete(mesh, optionsForMainScript)
         res.end()
     })
 
