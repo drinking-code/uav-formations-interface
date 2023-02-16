@@ -37,7 +37,7 @@ const inputs: {
 }, {
     type: NumberInput,
     name: 'min_distance',
-    defaultValue: '.1m',
+    defaultValue: '.05m',
     label: str('input-labels.UAVMinDistance'),
 }, {
     type: NumberInput,

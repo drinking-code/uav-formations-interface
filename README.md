@@ -10,6 +10,7 @@ accompanying Python script(s).
 - An up-to-date browser
 - [The repository with the Python script(s)](https://github.com/drinking-code/uav-formations-for-volumetric-displays-from-polygon-meshes)
 - Python 3.11
+- bpy (instructions at [the other repository](https://github.com/drinking-code/uav-formations-for-volumetric-displays-from-polygon-meshes#prerequisites))
 
 ## Getting started
 
