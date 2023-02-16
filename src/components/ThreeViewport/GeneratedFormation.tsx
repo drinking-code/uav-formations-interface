@@ -1,9 +1,10 @@
 import {useEffect, useRef, useState} from 'react'
-import {HalfFloatType, RGBAFormat, WebGLRenderTarget} from 'three'
+import {DataTexture, HalfFloatType, RGBAFormat, WebGLRenderTarget} from 'three'
 import {EffectComposer, RenderPass, SMAAPass, UnrealBloomPass} from 'three-stdlib'
 import {extend, useFrame, useThree} from '@react-three/fiber'
 
 import {fetchFormation, isInitialized, useServerDataMesh, useServerDataOptions} from '../../server-communication'
+import generateDirectionalityTexture from './generate-directionality-texture'
 
 extend({EffectComposer, RenderPass, SMAAPass, UnrealBloomPass})
 
@@ -13,6 +14,7 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
     const initialized = isInitialized(serverDataMesh, serverDataOptions)
 
     const [points, setPoints] = useState<Array<[number, number, number]>>([])
+    const [texture, setTexture] = useState<DataTexture>(null!)
 
     const state = useThree()
     const composer = useRef<EffectComposer<WebGLRenderTarget>>(null!)
@@ -38,6 +40,7 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
         const controller = new AbortController()
         const signal = controller.signal
         fetchFormation((receivedPointsString: string) => {
+            console.log(receivedPointsString)
             addPoints(
                 receivedPointsString.split("\n")
                     .filter(possiblePointString => possiblePointString.trim() !== '')
@@ -56,10 +59,15 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
         composer.current?.setPixelRatio(state.viewport.dpr)
     }, [state])
 
+    /*useEffect(() => {
+        generateDirectionalityTexture(180, 120, .1)
+            .then(dataTexture => {
+                setTexture(dataTexture)
+            })
+    }, [])*/
+
     useFrame(() => {
-        if (show) {
-            composer.current?.render()
-        }
+        if (show) composer.current?.render()
     }, show ? 1 : 0)
 
     return <>

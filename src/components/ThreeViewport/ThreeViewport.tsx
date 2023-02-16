@@ -1,5 +1,5 @@
 import {HTMLAttributes, useEffect, useState} from 'react'
-import {BufferGeometry, Color, Euler, Object3D, Vector3} from 'three'
+import {BufferGeometry, Euler, Object3D, Vector3} from 'three'
 import {Canvas} from '@react-three/fiber'
 import {OrbitControls} from '@react-three/drei'
 
@@ -18,7 +18,7 @@ Object3D.DEFAULT_UP = new Vector3(0, 0, 1)
 
 export default function ThreeViewport({newMeshFiles, ...props}:
                                           ImportMeshesPropsType & HTMLAttributes<HTMLElement>) {
-    const [target, setTarget] = useState<Object3D | null>(null)
+    // const [target, setTarget] = useState<Object3D | null>(null)
     const [meshes, setMeshes] = useState<BufferGeometry[]>([])
     const formationModeState = useState<boolean>(false)
     const [formationMode] = formationModeState
@@ -51,18 +51,26 @@ export default function ThreeViewport({newMeshFiles, ...props}:
             <Canvas camera={{
                 fov: 40,
                 position: new Vector3(...([-6, 15, 8].map(v => v * .8))),
-            }} onPointerMissed={() => setTarget(null)}>
+            }} onPointerMissed={() => /*setTarget(null)*/0}>
                 {formationMode && <color attach="background" args={['#222']}/>}
                 <gridHelper args={[gridSize, gridSize / smallTileSize, thickLinesColor, thinLinesColor]}
                             rotation={rotate90AlongX}/>
                 <gridHelper args={[gridSize, gridSize / bigTileSize, thickLinesColor, thickLinesColor]}
                             rotation={rotate90AlongX}/>
-                <directionalLight position={[2, 3, 3]} intensity={.5}/>
-                <directionalLight position={[-2, 2, -2]} intensity={.1}/>
-                <directionalLight position={[2, -2, -2]} intensity={.2}/>
-                <directionalLight position={[-2, -2, 2]} intensity={.3}/>
+                <directionalLight position={[2, 3, 3]} intensity={.3}/>
+
+                <directionalLight position={[-2, 2, 1]} intensity={.02}/>
+                <directionalLight position={[-2, 2, -1]} intensity={.03}/>
+                <directionalLight position={[-1, 4, -4]} intensity={.01}/>
+                <directionalLight position={[1, 2, -3]} intensity={.03}/>
+
+                <directionalLight position={[-2, -4, -1]} intensity={.05}/>
+                <directionalLight position={[2, -4, 1]} intensity={.05}/>
+                <directionalLight position={[2, -4, -1]} intensity={.05}/>
+                <directionalLight position={[-2, -4, 1]} intensity={.05}/>
+
+                <ambientLight intensity={.05}/>
                 <ImportedMeshes show={!formationMode} newMeshFiles={newMeshFiles}
-                                target={target} setTarget={setTarget}
                                 meshes={meshes} setMeshes={setMeshes}/>
                 <GeneratedFormation show={formationMode}/>
                 <OrbitControls makeDefault enableDamping={false}/>

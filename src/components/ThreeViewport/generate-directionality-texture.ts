@@ -18,9 +18,6 @@ export default async function generateDirectionalityTexture(alpha: number, beta:
         '</svg>'
 
     const canvas = document.createElement('canvas')
-    canvas.style.position = 'fixed'
-    canvas.style.top = '0'
-    document.body.append(canvas)
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
     ctx.canvas.height = svgHeight
     ctx.canvas.width = svgWidth

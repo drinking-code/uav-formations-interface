@@ -1,40 +1,13 @@
-export class FormationCache extends TwoKeyMap {
-    defaultResult = {
-        formation: [],
-        isComplete: false,
-    }
-
-    ensureKeys(firstKey, secondKey) {
-        super.ensureKeys(firstKey, secondKey)
-        if (this.get(firstKey, secondKey) === null)
-            this.set(firstKey, secondKey, {...this.defaultResult})
-    }
-
-    getResult(stl, options) {
-        this.ensureKeys(stl, options)
-        return this.get(stl, options)
-    }
-
-    isComplete(stl, options) {
-        return this.get(stl, options).isComplete
-    }
-
-    setComplete(stl, options) {
-        this.get(stl, options).isComplete = true
-    }
-
-    addPoint(stl, options, ...points) {
-        this.get(stl, options).formation.push(...points)
-    }
-}
+import _ from 'lodash'
 
 class TwoKeyMap {
     /**
      * Mapping the first key to maps that then map the second key to the data.
+     * @type Map<any, Map<any, any>>
      * */
     data = new Map()
 
-    ensureKeys(firstKey, secondKey) {
+    _ensureKeys(firstKey, secondKey) {
         if (!this.data.has(firstKey)) {
             this.data.set(firstKey, new Map())
         }
@@ -48,12 +21,69 @@ class TwoKeyMap {
     }
 
     set(firstKey, secondKey, value) {
-        this.ensureKeys(firstKey, secondKey)
+        this._ensureKeys(firstKey, secondKey)
         this.data.get(firstKey).set(secondKey, value)
         return this
     }
 
     has(firstKey, secondKey) {
         return this.data.has(firstKey) && this.data.get(firstKey).has(secondKey)
+    }
+}
+
+/**
+ * Two key map where .get() and .has() return values if the given key is equal to the stored one (as opposed to the same).
+ * This enables retrieval of values stored with an object as a key by using an equal (but not the same) object for querying.
+ * */
+class TwoKeyMapLaxSecondKey extends TwoKeyMap {
+    _matchSecondKey(firstKey, secondKey) {
+        const keys = this.data.get(firstKey).keys()
+        return Array.from(keys).find(key => _.isEqual(key, secondKey))
+    }
+
+    get(firstKey, secondKey) {
+        if (!this.data.has(firstKey)) return undefined
+        secondKey = this._matchSecondKey(firstKey, secondKey)
+        if (!secondKey) return undefined
+        return this.data.get(firstKey).get(secondKey)
+    }
+
+    has(firstKey, secondKey) {
+        if (!this.data.has(firstKey)) return false
+        secondKey = this._matchSecondKey(firstKey, secondKey)
+        return !!secondKey
+
+    }
+}
+
+export class FormationCache extends TwoKeyMapLaxSecondKey {
+    defaultResult = {
+        formation: [],
+        isComplete: false,
+    }
+
+    ensureKeys(stl, options) {
+        super._ensureKeys(stl, options)
+        if (this.get(stl, options) === null)
+            this.set(stl, options, {...this.defaultResult})
+    }
+
+    getResult(stl, options) {
+        this.ensureKeys(stl, options)
+        return this.get(stl, options).formation
+    }
+
+    isComplete(stl, options) {
+        return this.get(stl, options).isComplete
+    }
+
+    setComplete(stl, options) {
+        this.ensureKeys(stl, options)
+        this.get(stl, options).isComplete = true
+    }
+
+    addPoint(stl, options, ...points) {
+        this.ensureKeys(stl, options)
+        this.get(stl, options).formation.push(...points)
     }
 }

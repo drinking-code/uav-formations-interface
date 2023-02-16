@@ -1,17 +1,18 @@
 import {Dispatch, SetStateAction, useEffect, useState} from 'react'
-import {BufferGeometry, DoubleSide, Object3D} from 'three'
+import {BufferGeometry, DoubleSide, Euler, Object3D} from 'three'
 import {MTLLoader, OBJLoader, PLYLoader, STLLoader} from 'three-stdlib'
 import {ThreeEvent} from '@react-three/fiber'
-import {TransformControls} from '@react-three/drei'
+// import {TransformControls} from '@react-three/drei'
+import convert from 'convert'
 
 export type ImportMeshesPropsType = {
     newMeshFiles: File[]
 }
 
-export default function ImportedMeshes({show, newMeshFiles, target, setTarget, meshes, setMeshes}:
+export default function ImportedMeshes({show, newMeshFiles, setTarget, meshes, setMeshes}:
                                            ImportMeshesPropsType &
                                            { show?: boolean } &
-                                           { target: Object3D | null, setTarget: Dispatch<SetStateAction<Object3D | null>> } &
+                                           { target?: Object3D | null, setTarget?: Dispatch<SetStateAction<Object3D | null>> } &
                                            { meshes: BufferGeometry[], setMeshes: Dispatch<SetStateAction<BufferGeometry[]>> }) {
     const [meshFiles, setMeshFiles] = useState<File[]>([])
 
@@ -23,7 +24,8 @@ export default function ImportedMeshes({show, newMeshFiles, target, setTarget, m
     }
 
     function clickHandler(e: ThreeEvent<MouseEvent>) {
-        setTarget(e.object)
+        if (setTarget)
+            setTarget(e.object)
     }
 
     useEffect(() => {
@@ -41,6 +43,7 @@ export default function ImportedMeshes({show, newMeshFiles, target, setTarget, m
                 // Type 'ArrayBuffer' is not assignable to type 'string'.
                 const geometry = (new Loader()).parse(contents)
                 if (geometry instanceof BufferGeometry) {
+                    geometry.rotateZ(convert(180, 'deg').to('rad'))
                     setMeshes([...meshes, geometry])
                 }
             })
@@ -55,7 +58,7 @@ export default function ImportedMeshes({show, newMeshFiles, target, setTarget, m
     if (show)
         return <>
             {meshes.map(geometry =>
-                <mesh geometry={geometry}
+                <mesh geometry={geometry} rotation={new Euler(0, 0, 0)}
                       onClick={clickHandler}
                       key={geometry.id}>
                     <meshStandardMaterial side={DoubleSide}/>

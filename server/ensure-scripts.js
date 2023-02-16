@@ -18,12 +18,14 @@ if (!fs.existsSync(pythonMainScript)) {
 }
 
 export const pythonCwd = path.dirname(pythonMainScript)
-export const pythonDirectionalityScript = path.join(pythonCwd, 'illumination_directionality.py')
+let pythonDirectionalityScript = path.join(pythonCwd, 'illumination_directionality.py')
 if (!fs.existsSync(pythonDirectionalityScript)) {
     console.warn(
         chalk.bgYellowBright.black(' WARNING '),
         `Script for directionality not found. You may have to pull the newest version of the scripts. Points will be generated without directionality data.`
     )
+    pythonDirectionalityScript = null
 }
+export {pythonDirectionalityScript}
 
 export const pythonBin = path.join(pythonCwd, 'venv', 'bin', 'python')
