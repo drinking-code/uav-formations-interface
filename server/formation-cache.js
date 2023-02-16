@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-class TwoKeyMap {
+export class TwoKeyMap {
     /**
      * Mapping the first key to maps that then map the second key to the data.
      * @type Map<any, Map<any, any>>

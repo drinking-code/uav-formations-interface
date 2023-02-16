@@ -1,19 +1,24 @@
 import {useEffect, useRef, useState} from 'react'
-import {DataTexture, HalfFloatType, RGBAFormat, WebGLRenderTarget} from 'three'
+import {DataTexture, Euler, HalfFloatType, Quaternion, RGBAFormat, Vector3, WebGLRenderTarget} from 'three'
 import {EffectComposer, RenderPass, SMAAPass, UnrealBloomPass} from 'three-stdlib'
 import {extend, useFrame, useThree} from '@react-three/fiber'
 
 import {fetchFormation, isInitialized, useServerDataMesh, useServerDataOptions} from '../../server-communication'
 import generateDirectionalityTexture from './generate-directionality-texture'
+import yawPitchFromDirection from '../../utils/yaw-pitch-from-direction'
 
 extend({EffectComposer, RenderPass, SMAAPass, UnrealBloomPass})
+
+export type PointPositionType = [number, number, number]
+export type DirectionVectorType = [number, number, number]
+export type PointDataType = [PointPositionType, DirectionVectorType, DataTexture]
 
 export default function GeneratedFormation({show = false}: { show: boolean }) {
     const serverDataMesh = useServerDataMesh()
     const serverDataOptions = useServerDataOptions()
     const initialized = isInitialized(serverDataMesh, serverDataOptions)
 
-    const [points, setPoints] = useState<Array<[number, number, number]>>([])
+    const [points, setPoints] = useState<Array<PointDataType>>([])
     const [texture, setTexture] = useState<DataTexture>(null!)
 
     const state = useThree()
@@ -39,15 +44,23 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
         resetPoints()
         const controller = new AbortController()
         const signal = controller.signal
-        fetchFormation((receivedPointsString: string) => {
-            console.log(receivedPointsString)
-            addPoints(
-                receivedPointsString.split("\n")
-                    .filter(possiblePointString => possiblePointString.trim() !== '')
-                    .map(pointString => pointString.split(' ')
+        fetchFormation(async (receivedPointsString: string) => {
+            const data = await Promise.all(receivedPointsString.split("\n")
+                .filter(possiblePointString => possiblePointString.trim() !== '')
+                .map(async pointString => {
+                    const splitPointData = pointString.split(' ')
                         .map(coordinateString => Number(coordinateString))
-                    ) as Array<[number, number, number]>
-            )
+                    const position = splitPointData.slice(0, 3)
+                    const directionalityAngles = splitPointData.slice(-2)
+                    const directionalityVector = splitPointData.slice(3, 6)
+                    return [
+                        position,
+                        directionalityVector,
+                        await generateDirectionalityTexture(directionalityAngles[0], directionalityAngles[1], 0)
+                    ]
+                })) as Array<PointDataType>
+
+            addPoints(data)
         }, signal)
         return () => {
             controller.abort()
@@ -59,24 +72,22 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
         composer.current?.setPixelRatio(state.viewport.dpr)
     }, [state])
 
-    /*useEffect(() => {
-        generateDirectionalityTexture(180, 120, .1)
-            .then(dataTexture => {
-                setTexture(dataTexture)
-            })
-    }, [])*/
-
     useFrame(() => {
         if (show) composer.current?.render()
     }, show ? 1 : 0)
 
     return <>
-        {show && points.map((point) =>
-            <mesh position={point} key={point.join(',')}>
+        {show && points.map(([point, direction, texture]) => {
+            const [yaw, pitch] = yawPitchFromDirection(direction)
+            const rotation = new Euler(0, pitch, yaw)
+            rotation.order = 'ZYX'
+
+            return <mesh position={new Vector3(...point)} key={point.join(',')} rotation={rotation}>
                 <sphereGeometry args={[serverDataOptions.uav_size as number / 2, 12, 8]}/>
-                <meshStandardMaterial emissive={'#ffffff'} emissiveIntensity={4} toneMapped={false}/>
+                <meshStandardMaterial color={'#000'} emissive={'#fff'} emissiveIntensity={4} toneMapped={false}
+                                      emissiveMap={texture}/>
             </mesh>
-        )}
+        })}
         <effectComposer ref={composer} args={[state.gl, target]}>
             <renderPass attach={'passes-0'} args={[state.scene, state.camera]} enabled={show}/>
             {/* @ts-ignore */}

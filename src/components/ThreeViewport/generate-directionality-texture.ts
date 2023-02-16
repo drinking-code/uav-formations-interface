@@ -1,9 +1,15 @@
 import {Canvg} from 'canvg'
 import {DataTexture} from 'three'
+import {TwoKeyMap} from '../../../server/formation-cache'
+
+const cachedTextures = new TwoKeyMap()
+
+const svgHeight = 128
+const svgWidth = svgHeight * 2
 
 export default async function generateDirectionalityTexture(alpha: number, beta: number, bleed: number): Promise<DataTexture> {
-    const svgHeight = 128
-    const svgWidth = svgHeight * 2
+    if (cachedTextures.has(alpha, beta))
+        return cachedTextures.get(alpha, beta)
     const yHeight = alpha / 180 * svgHeight
     const xHeight = beta / 360 * svgWidth
     const offsetToCenter = ([x, y]: [number, number]) => [x + svgWidth / 2, y + svgHeight / 2]
@@ -25,6 +31,7 @@ export default async function generateDirectionalityTexture(alpha: number, beta:
     await cvg.render()
     const imageData = ctx.getImageData(0, 0, svgWidth, svgHeight).data
     const dataTexture = new DataTexture(imageData, svgWidth, svgHeight)
+    cachedTextures.set(alpha, beta, dataTexture)
     dataTexture.needsUpdate = true
     return dataTexture
 }
