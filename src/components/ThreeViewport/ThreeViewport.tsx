@@ -20,7 +20,7 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                                           ImportMeshesPropsType & HTMLAttributes<HTMLElement>) {
     // const [target, setTarget] = useState<Object3D | null>(null)
     const [meshes, setMeshes] = useState<BufferGeometry[]>([])
-    const formationModeState = useState<boolean>(true)
+    const formationModeState = useState<boolean>(false)
     const [formationMode] = formationModeState
 
     const gridSize = 16

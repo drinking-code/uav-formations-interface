@@ -94,10 +94,19 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
                                       toneMapped={false} emissiveMap={texture}/>
             </mesh>
         })}
+        {/*<mesh>
+            <boxGeometry args={[3, 3, 3]}/>
+            <meshBasicMaterial color={'#fff'} wireframe={true}/>
+        </mesh>*/}
         <effectComposer ref={composer} args={[state.gl, target]}>
             <renderPass attach={'passes-0'} args={[state.scene, state.camera]} enabled={show}/>
             {/* @ts-ignore */}
-            <unrealBloomPass attach={'passes-2'} threshold={1} strength={.7} radius={0.9}/>
+            {/*<sMAAPass attach={'passes-1'} args={[
+                state.size.width * state.viewport.dpr,
+                state.size.height * state.viewport.dpr
+            ]}/>*/}
+            {/* @ts-ignore */}
+            <unrealBloomPass attach={'passes-1'} threshold={1} strength={.7} radius={0.9}/>
             {/* todo: strength adaptive (in relation to point distance, probably, and size) */}
         </effectComposer>
     </>

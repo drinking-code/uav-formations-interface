@@ -95,7 +95,7 @@ export function scriptHandler({mesh, options}, req, res) {
             if (code !== 0) res.status(http_code.internal_server_error)
             memCache.setComplete(mesh, optionsForMainScript)
             mainDone = true
-            if (pythonDirectionalityProcess) {
+            if (!pythonDirectionalityProcess) {
                 res.end()
                 resolve()
             }
