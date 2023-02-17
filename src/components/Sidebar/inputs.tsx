@@ -47,7 +47,7 @@ const inputs: {
 },], [{
     type: NumberInput,
     name: 'sharp_threshold',
-    defaultValue: '140deg',
+    defaultValue: '120deg',
     label: str('input-labels.sharpnessThreshold'),
 },], [{
     type: ToggleInput,

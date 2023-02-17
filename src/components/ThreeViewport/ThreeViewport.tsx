@@ -1,7 +1,7 @@
 import {HTMLAttributes, useEffect, useState} from 'react'
 import {BufferGeometry, Euler, Object3D, Vector3} from 'three'
 import {Canvas} from '@react-three/fiber'
-import {OrbitControls} from '@react-three/drei'
+import {OrbitControls, Point, PointMaterial} from '@react-three/drei'
 
 import GeneratedFormation from './GeneratedFormation'
 import ImportedMeshes, {ImportMeshesPropsType} from './ImportedMeshes'
@@ -20,7 +20,7 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                                           ImportMeshesPropsType & HTMLAttributes<HTMLElement>) {
     // const [target, setTarget] = useState<Object3D | null>(null)
     const [meshes, setMeshes] = useState<BufferGeometry[]>([])
-    const formationModeState = useState<boolean>(false)
+    const formationModeState = useState<boolean>(true)
     const [formationMode] = formationModeState
 
     const gridSize = 16
@@ -70,6 +70,19 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                 <directionalLight position={[-2, -4, 1]} intensity={.05}/>
 
                 <ambientLight intensity={.05}/>
+
+                <points>
+                    <bufferGeometry>
+                        <bufferAttribute
+                            attach={'attributes-position'}
+                            array={new Float32Array([0, 0, 0])}
+                            count={1}
+                            itemSize={3}
+                        />
+                    </bufferGeometry>
+                    <PointMaterial transparent color={'#4b8ec5'} size={4} sizeAttenuation={false}/>
+                </points>
+
                 <ImportedMeshes show={!formationMode} newMeshFiles={newMeshFiles}
                                 meshes={meshes} setMeshes={setMeshes}/>
                 <GeneratedFormation show={formationMode}/>
