@@ -19,7 +19,7 @@ Object3D.DEFAULT_UP = new Vector3(0, 0, 1)
 
 export default function ThreeViewport({newMeshFiles, ...props}:
                                           ImportMeshesPropsType & HTMLAttributes<HTMLElement>) {
-    // const [target, setTarget] = useState<Object3D | null>(null)
+    const [target, setTarget] = useState<Object3D | null>(null)
     const [meshes, setMeshes] = useState<BufferGeometry[]>([])
     const formationModeState = useState<boolean>(false)
     const [formationMode] = formationModeState
@@ -48,9 +48,10 @@ export default function ThreeViewport({newMeshFiles, ...props}:
             }} camera={{
                 fov: 40,
                 position: new Vector3(...([-6, 15, 8].map(v => v * .8))),
-            }} onPointerMissed={() => /*setTarget(null)*/0}>
+            }} onPointerMissed={() => setTarget(null)}>
                 <Grid/>
                 <ImportedMeshes show={!formationMode} newMeshFiles={newMeshFiles}
+                                target={target} setTarget={setTarget}
                                 meshes={meshes} setMeshes={setMeshes}/>
                 <GeneratedFormation show={formationMode}/>
                 <OrbitControls makeDefault enableDamping={false}/>

@@ -1,9 +1,11 @@
-import {HTMLAttributes, useRef} from 'react'
+import {ForwardedRef, forwardRef, HTMLAttributes, MutableRefObject, useRef} from 'react'
 import {Scene as ThreeScene} from 'three'
 import {useFrame, useThree} from '@react-three/fiber'
 
-export default function Scene({priority=2, children, ...props}: {priority?: number} & HTMLAttributes<any>) {
-    const scene = useRef<ThreeScene>(null!)
+const Scene = forwardRef(({priority = 2, children, ...props}: { priority?: number } & HTMLAttributes<any>,
+                          scene: ForwardedRef<ThreeScene>) => {
+    const externalScene = !!scene
+    scene ??= useRef<ThreeScene>(null!)
     const {gl, camera} = useThree((state) => {
         return {
             gl: state.gl,
@@ -11,15 +13,18 @@ export default function Scene({priority=2, children, ...props}: {priority?: numb
         }
     })
 
-    useFrame(() => {
-        gl.autoClear = false
-        gl.clearDepth()
-        gl.render(scene.current, camera)
-    }, priority)
+    if (!externalScene)
+        useFrame(() => {
+            gl.autoClear = false
+            gl.clearDepth()
+            gl.render((scene as MutableRefObject<ThreeScene>).current, camera)
+        }, priority)
 
     return <>
         <scene ref={scene}>
             {children}
         </scene>
     </>
-}
+})
+
+export default Scene

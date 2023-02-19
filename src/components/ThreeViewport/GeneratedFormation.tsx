@@ -1,29 +1,23 @@
 import {useEffect, useMemo, useRef, useState} from 'react'
-import {
-    DataTexture,
-    Euler,
-    HalfFloatType,
-    RGBAFormat,
-    Scene,
-    SphereGeometry,
-    Vector3,
-    WebGLRenderTarget
-} from 'three'
-import {EffectComposer, RenderPass, ShaderPass, SMAAPass, UnrealBloomPass} from 'three-stdlib'
-import {extend, useFrame, useThree} from '@react-three/fiber'
+import {DataTexture, Euler, Scene as ThreeScene, SphereGeometry, Vector3} from 'three'
+import {FXAAShader, RenderPass, ShaderPass, SMAAPass, UnrealBloomPass} from 'three-stdlib'
+import {extend, useThree} from '@react-three/fiber'
 
 import {fetchFormation, isInitialized, useServerDataMesh, useServerDataOptions} from '../../server-communication'
 import generateDirectionalityTexture from './generate-directionality-texture'
 import yawPitchFromDirection from '../../utils/yaw-pitch-from-direction'
 
-extend({EffectComposer, RenderPass, ShaderPass, SMAAPass, UnrealBloomPass})
+import EffectComposer from './EffectComposer'
+import Scene from './Scene'
+
+extend({RenderPass, ShaderPass, SMAAPass, UnrealBloomPass})
 
 export type PointPositionType = [number, number, number]
 export type DirectionVectorType = [number, number, number]
 export type PointDataType = [PointPositionType, DirectionVectorType, DataTexture] | [PointPositionType]
 
 export default function GeneratedFormation({show = false}: { show: boolean }) {
-    const scene = useRef<Scene>(null!)
+    const scene = useRef<ThreeScene>(null!)
     const serverDataMesh = useServerDataMesh()
     const serverDataOptions = useServerDataOptions()
     const initialized = isInitialized(serverDataMesh, serverDataOptions)
@@ -35,19 +29,6 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
     const [points, setPoints] = useState<Array<PointDataType>>([])
 
     const state = useThree()
-    const composer = useRef<EffectComposer>(null!)
-    const [target] = useState(() => {
-        const t = new WebGLRenderTarget(state.size.width, state.size.height, {
-            type: HalfFloatType,
-            format: RGBAFormat,
-            encoding: state.gl.outputEncoding,
-            depthBuffer: true,
-            stencilBuffer: false,
-            anisotropy: 1,
-        })
-        t.samples = 4
-        return t
-    })
 
     const addPoints = (newPoints: typeof points) => setPoints(currentPoints => [...currentPoints, ...newPoints])
     const resetPoints = () => setPoints([])
@@ -82,21 +63,12 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
         }
     }, [serverDataMesh, serverDataOptions])
 
-    useEffect(() => {
-        composer.current?.setSize(state.size.width, state.size.height)
-        composer.current?.setPixelRatio(state.viewport.dpr)
-    }, [state])
-
-    useFrame(() => {
-        if (show) composer.current?.render()
-    }, show ? 1 : 0)
-
     const effectiveBleed = serverDataOptions?.illumination_directionality as boolean
         ? (serverDataOptions?.illumination_directionality_bleed as number ?? 0)
         : 1
 
     return <>
-        <scene ref={scene}>
+        <Scene ref={scene}>
             {show && <color attach="background" args={['#4a4a4a']}/>}
             {show && points.map(([point, direction, texture]) => {
                 let rotation
@@ -117,18 +89,18 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
                 <boxGeometry args={[3, 3, 3]}/>
                 <meshBasicMaterial color={'#fff'} wireframe={true}/>
             </mesh>*/}
-        </scene>
-        <effectComposer ref={composer} args={[state.gl, target]}>
-            <renderPass attach={'passes-0'} scene={scene.current} camera={state.camera} enabled={show}/>
-            {/* @ts-ignore */}
-            <unrealBloomPass attach={'passes-1'} threshold={0.1} strength={1.3} radius={.9}/>
-            {/* todo: strength adaptive (in relation to point distance, probably, and size) */}
-            {/* @ts-ignore */}
-            <sMAAPass attach={'passes-2'} args={[
-                state.size.width * state.viewport.dpr,
-                state.size.height * state.viewport.dpr
-            ]} unbiased={false}/>
-        </effectComposer>
+            <EffectComposer show={show}>
+                <renderPass attach={'passes-0'} scene={scene.current} camera={state.camera} enabled={show}/>
+                {/* @ts-ignore */}
+                <unrealBloomPass attach={'passes-1'} threshold={0.1} strength={1.3} radius={.9}/>
+                {/* todo: strength adaptive (in relation to point distance, probably, and size) */}
+                {/* @ts-ignore */}
+                <sMAAPass attach={'passes-2'} args={[
+                    state.size.width * state.viewport.dpr,
+                    state.size.height * state.viewport.dpr
+                ]} unbiased={false}/>
+            </EffectComposer>
+        </Scene>
     </>
 
 }

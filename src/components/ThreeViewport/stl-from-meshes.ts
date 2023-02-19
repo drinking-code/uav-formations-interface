@@ -5,6 +5,7 @@ export default function stlFromMeshes(meshes: BufferGeometry[]): string {
     const fakeScene = {
         traverse(callback: (object: Object3D) => void) {
             meshes.forEach(geometry => {
+                if (!geometry) return
                 const mesh = new Mesh(geometry.clone())
                 callback(mesh)
             })

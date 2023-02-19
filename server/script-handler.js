@@ -86,8 +86,10 @@ export function scriptHandler({mesh, options}, req, res) {
                 const id = uuid()
                 points.set(id, pointData)
                 if (pythonDirectionalityProcess) {
-                    pythonDirectionalityProcess.stdin.write([id, pointData].join(' '))
-                    pythonDirectionalityProcess.stdin.write("\n")
+                    if (!pythonDirectionalityProcess.stdin.closed) {
+                        pythonDirectionalityProcess.stdin.write([id, pointData].join(' '))
+                        pythonDirectionalityProcess.stdin.write("\n")
+                    }
                 } else {
                     res.write(filterNonNumeric(pointData))
                     res.write("\n")
