@@ -47,14 +47,12 @@ export default function Sidebar({handleValueChange, addMeshes, ...props}: Sideba
             ...values,
             [data.target.name]: data.target.value
         })
-        if (handleValueChange)
-            handleValueChange(values)
     }
 
     useEffect(() => {
         if (handleValueChange)
             handleValueChange(values)
-    }, [])
+    }, [values])
 
     function handleMeshInput(e: SyntheticEvent<null, CustomEvent>) {
         if (!addMeshes) return

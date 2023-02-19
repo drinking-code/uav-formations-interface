@@ -29,6 +29,14 @@ export class TwoKeyMap {
     has(firstKey, secondKey) {
         return this.data.has(firstKey) && this.data.get(firstKey).has(secondKey)
     }
+
+    get size() {
+        return this.sizeDeep.reduce((a, b) => a + b)
+    }
+
+    get sizeDeep() {
+        return Array.from(this.data.values()).map(map => map.size)
+    }
 }
 
 /**
