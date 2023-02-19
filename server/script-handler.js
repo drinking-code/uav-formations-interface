@@ -18,6 +18,7 @@ export function scriptHandler({mesh, options}, req, res) {
     let resolve
     const pythonProcessPromise = new Promise(res => resolve = res)
     const points = new Map()
+    const calculateDirectionality = !!pythonDirectionalityScript && options.illumination_directionality
 
     // mesh is empty -> no points
     if (mesh.replace(/(end)?solid( .+)/gm, '').trim() === '')
@@ -51,7 +52,7 @@ export function scriptHandler({mesh, options}, req, res) {
         res.end()
         resolve()
     }
-    const pythonDirectionalityProcess = pythonDirectionalityScript ? startPython([pythonDirectionalityScript, mesh, JSON.stringify(optionsForDirectionalityScript)],
+    const pythonDirectionalityProcess = calculateDirectionality ? startPython([pythonDirectionalityScript, mesh, JSON.stringify(optionsForDirectionalityScript)],
         pointsString => {
             const pointsArray = pointsString.split("\n").filter(value => value.trim() !== '')
             let arrayContainsLastPointSent = false

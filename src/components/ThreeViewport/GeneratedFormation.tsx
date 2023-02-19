@@ -68,7 +68,11 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
                     const directionalityAngles = splitPointData.slice(-2)
                     const directionalityVector = splitPointData.slice(3, 6)
                     return [position, directionalityVector,
-                        await generateDirectionalityTexture(directionalityAngles[0], directionalityAngles[1], 0)]
+                        await generateDirectionalityTexture(
+                            directionalityAngles[0],
+                            directionalityAngles[1],
+                            serverDataOptions.illumination_directionality_bleed as number
+                        )]
                 })) as Array<PointDataType>
 
             addPoints(data)
@@ -87,6 +91,10 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
         if (show) composer.current?.render()
     }, show ? 1 : 0)
 
+    const effectiveBleed = serverDataOptions?.illumination_directionality as boolean
+        ? (serverDataOptions?.illumination_directionality_bleed as number ?? 0)
+        : 1
+
     return <>
         <scene ref={scene}>
             {show && <color attach="background" args={['#4a4a4a']}/>}
@@ -101,7 +109,7 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
 
                 return <mesh geometry={uavMesh} key={point.join(',')}
                              position={new Vector3(...point)} rotation={!noDirection ? rotation : undefined}>
-                    <meshStandardMaterial color={'#000'} emissive={'#fff'} emissiveIntensity={1}
+                    <meshStandardMaterial color={'#000'} emissive={'#fff'} emissiveIntensity={1 - effectiveBleed * .3}
                                           toneMapped={false} emissiveMap={texture}/>
                 </mesh>
             })}
@@ -113,7 +121,7 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
         <effectComposer ref={composer} args={[state.gl, target]}>
             <renderPass attach={'passes-0'} scene={scene.current} camera={state.camera} enabled={show}/>
             {/* @ts-ignore */}
-            <unrealBloomPass attach={'passes-1'} threshold={.1} strength={1.5} radius={.9}/>
+            <unrealBloomPass attach={'passes-1'} threshold={0.1} strength={1.3} radius={.9}/>
             {/* todo: strength adaptive (in relation to point distance, probably, and size) */}
             {/* @ts-ignore */}
             <sMAAPass attach={'passes-2'} args={[

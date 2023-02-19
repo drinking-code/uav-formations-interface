@@ -43,7 +43,7 @@ export class TwoKeyMap {
  * Two key map where .get() and .has() return values if the given key is equal to the stored one (as opposed to the same).
  * This enables retrieval of values stored with an object as a key by using an equal (but not the same) object for querying.
  * */
-class TwoKeyMapLaxSecondKey extends TwoKeyMap {
+export class TwoKeyMapLaxSecondKey extends TwoKeyMap {
     _matchSecondKey(firstKey, secondKey) {
         const keys = this.data.get(firstKey).keys()
         return Array.from(keys).find(key => _.isEqual(key, secondKey))
