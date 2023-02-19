@@ -76,8 +76,6 @@ export function scriptHandler({mesh, options}, req, res) {
             directionalityOkay()
         }
     ) : null
-    if (pythonDirectionalityProcess)
-        killWhenConnectionClosed(pythonDirectionalityProcess, req, res)
 
     const pythonMainProcess = startPython([pythonMainScript, mesh, JSON.stringify(optionsForMainScript)],
         pointsString => {
@@ -103,7 +101,11 @@ export function scriptHandler({mesh, options}, req, res) {
             if (code !== 0) res.status(http_code.internal_server_error)
             memCache.setComplete(mesh, optionsForMainScript)
             mainDone = true
-            setTimeout(() => pythonDirectionalityProcess?.kill('SIGINT'), 500)
+            if (!pythonDirectionalityProcess.stdin.closed) {
+                pythonDirectionalityProcess.stdin.write('EXIT')
+                pythonDirectionalityProcess.stdin.write("\n")
+            }
+            setTimeout(() => pythonDirectionalityProcess?.kill('SIGINT'), 5 * 1e3)
             if (!pythonDirectionalityProcess) {
                 res.end()
                 resolve()
