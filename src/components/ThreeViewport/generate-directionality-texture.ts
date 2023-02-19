@@ -17,10 +17,12 @@ export default async function generateDirectionalityTexture(alpha: number, beta:
     const rightVertex = offsetToCenter([xHeight / 2, 0])
     const bottomVertex = offsetToCenter([0, yHeight / 2])
     const leftVertex = offsetToCenter([-xHeight / 2, 0])
+    const rhombusPoints = [topVertex, rightVertex, bottomVertex, leftVertex].map(point => point.join(' ')).join(' ')
     const background = Array(3).fill(Math.round(255 * bleed).toString(16)).join('')
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgWidth} ${svgHeight}">` +
+        `<filter id="blur"><feGaussianBlur stdDeviation="${svgHeight / 10}"/></filter>` +
         `<rect height="${svgHeight}" width="${svgWidth}" fill="#${background}"/>` +
-        `<polyline points="${topVertex.join(' ')} ${rightVertex.join(' ')} ${bottomVertex.join(' ')} ${leftVertex.join(' ')}" fill="white"/>` +
+        `<polyline points="${rhombusPoints}" fill="white" filter="url(#blur)"/>` +
         '</svg>'
 
     const canvas = document.createElement('canvas')
