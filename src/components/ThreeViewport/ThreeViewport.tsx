@@ -49,20 +49,6 @@ export default function ThreeViewport({newMeshFiles, ...props}:
                 fov: 40,
                 position: new Vector3(...([-6, 15, 8].map(v => v * .8))),
             }} onPointerMissed={() => /*setTarget(null)*/0}>
-                <directionalLight position={[2, 3, 3]} intensity={.3}/>
-
-                <directionalLight position={[-2, 2, 1]} intensity={.02}/>
-                <directionalLight position={[-2, 2, -1]} intensity={.03}/>
-                <directionalLight position={[-1, 4, -4]} intensity={.01}/>
-                <directionalLight position={[1, 2, -3]} intensity={.03}/>
-
-                <directionalLight position={[-2, -4, -1]} intensity={.05}/>
-                <directionalLight position={[2, -4, 1]} intensity={.05}/>
-                <directionalLight position={[2, -4, -1]} intensity={.05}/>
-                <directionalLight position={[-2, -4, 1]} intensity={.05}/>
-
-                <ambientLight intensity={.05}/>
-
                 <Grid/>
                 <ImportedMeshes show={!formationMode} newMeshFiles={newMeshFiles}
                                 meshes={meshes} setMeshes={setMeshes}/>

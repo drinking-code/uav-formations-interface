@@ -63,16 +63,12 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
                 .map(async pointString => {
                     const splitPointData = pointString.split(' ')
                         .map(coordinateString => Number(coordinateString))
-                    if (splitPointData.length === 3)
-                        return [splitPointData]
+                    if (splitPointData.length === 3) return [splitPointData]
                     const position = splitPointData.slice(0, 3)
                     const directionalityAngles = splitPointData.slice(-2)
                     const directionalityVector = splitPointData.slice(3, 6)
-                    return [
-                        position,
-                        directionalityVector,
-                        await generateDirectionalityTexture(directionalityAngles[0], directionalityAngles[1], 0)
-                    ]
+                    return [position, directionalityVector,
+                        await generateDirectionalityTexture(directionalityAngles[0], directionalityAngles[1], 0)]
                 })) as Array<PointDataType>
 
             addPoints(data)
@@ -93,7 +89,7 @@ export default function GeneratedFormation({show = false}: { show: boolean }) {
 
     return <>
         <scene ref={scene}>
-            {/*{show && <color attach="background" args={['#4a4a4a']}/>}*/}
+            {show && <color attach="background" args={['#4a4a4a']}/>}
             {show && points.map(([point, direction, texture]) => {
                 let rotation
                 const noDirection = !direction || direction.length !== 3

@@ -4,6 +4,7 @@ import {MTLLoader, OBJLoader, PLYLoader, STLLoader} from 'three-stdlib'
 import {ThreeEvent} from '@react-three/fiber'
 // import {TransformControls} from '@react-three/drei'
 import convert from 'convert'
+import Scene from './Scene'
 
 export type ImportMeshesPropsType = {
     newMeshFiles: File[]
@@ -57,14 +58,30 @@ export default function ImportedMeshes({show, newMeshFiles, setTarget, meshes, s
 
     if (show)
         return <>
-            {meshes.map(geometry =>
-                <mesh geometry={geometry} rotation={new Euler(0, 0, 0)}
-                      onClick={clickHandler}
-                      key={geometry.id}>
-                    <meshStandardMaterial side={DoubleSide}/>
-                </mesh>
-            )}
-            {/*todo: {target && <TransformControls object={target} mode={'translate'}/>}*/}
+            <Scene>
+                <directionalLight position={[2, 3, 3]} intensity={.3}/>
+
+                <directionalLight position={[-2, 2, 1]} intensity={.02}/>
+                <directionalLight position={[-2, 2, -1]} intensity={.03}/>
+                <directionalLight position={[-1, 4, -4]} intensity={.01}/>
+                <directionalLight position={[1, 2, -3]} intensity={.03}/>
+
+                <directionalLight position={[-2, -4, -1]} intensity={.05}/>
+                <directionalLight position={[2, -4, 1]} intensity={.05}/>
+                <directionalLight position={[2, -4, -1]} intensity={.05}/>
+                <directionalLight position={[-2, -4, 1]} intensity={.05}/>
+
+                <ambientLight intensity={.05}/>
+
+                {meshes.map(geometry =>
+                    <mesh geometry={geometry} rotation={new Euler(0, 0, 0)}
+                          onClick={clickHandler}
+                          key={geometry.id}>
+                        <meshStandardMaterial side={DoubleSide}/>
+                    </mesh>
+                )}
+                {/*todo: {target && <TransformControls object={target} mode={'translate'}/>}*/}
+            </Scene>
         </>
     else return <></>
 }

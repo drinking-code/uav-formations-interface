@@ -46,6 +46,11 @@ export function scriptHandler({mesh, options}, req, res) {
 
     let lastPointSent = null, mainDone = false
 
+    const directionalityOkay = () => {
+        memCache.setComplete(mesh, {...optionsForMainScript, ...optionsForDirectionalityScript})
+        res.end()
+        resolve()
+    }
     const pythonDirectionalityProcess = pythonDirectionalityScript ? startPython([pythonDirectionalityScript, mesh, JSON.stringify(optionsForDirectionalityScript)],
         pointsString => {
             const pointsArray = pointsString.split("\n").filter(value => value.trim() !== '')
@@ -61,13 +66,13 @@ export function scriptHandler({mesh, options}, req, res) {
                 memCache.addPoint(mesh, {...optionsForMainScript, ...optionsForDirectionalityScript}, positionAndDirectionality)
                 arrayContainsLastPointSent = arrayContainsLastPointSent || id === lastPointSent
             }
+            if (arrayContainsLastPointSent && mainDone)
+                directionalityOkay()
         },
         error => logErrorInDevMode(error, 'directionality python script'),
         code => {
             if (code !== 0) res.status(http_code.internal_server_error)
-            memCache.setComplete(mesh, {...optionsForMainScript, ...optionsForDirectionalityScript})
-            res.end()
-            resolve()
+            directionalityOkay()
         }
     ) : null
     if (pythonDirectionalityProcess)
@@ -95,6 +100,7 @@ export function scriptHandler({mesh, options}, req, res) {
             if (code !== 0) res.status(http_code.internal_server_error)
             memCache.setComplete(mesh, optionsForMainScript)
             mainDone = true
+            setTimeout(() => pythonDirectionalityProcess?.kill('SIGINT'), 500)
             if (!pythonDirectionalityProcess) {
                 res.end()
                 resolve()

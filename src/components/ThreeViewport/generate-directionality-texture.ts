@@ -8,6 +8,8 @@ const svgHeight = 128
 const svgWidth = svgHeight * 2
 
 export default async function generateDirectionalityTexture(alpha: number, beta: number, bleed: number): Promise<DataTexture> {
+    alpha = Math.max(Math.min(alpha, 180), 0)
+    beta = Math.max(Math.min(beta, 360), 0)
     if (cachedTextures.has(alpha, beta))
         return cachedTextures.get(alpha, beta)
     const yHeight = alpha / 180 * svgHeight

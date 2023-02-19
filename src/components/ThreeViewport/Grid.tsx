@@ -1,17 +1,9 @@
-import {Euler, Scene} from 'three'
-import {useRef} from 'react'
-import {useFrame, useThree} from '@react-three/fiber'
+import {Euler} from 'three'
 import {PointMaterial} from '@react-three/drei'
 
-export default function Grid() {
-    const scene = useRef<Scene>(null!)
-    const {gl, camera} = useThree((state) => {
-        return {
-            gl: state.gl,
-            camera: state.camera,
-        }
-    })
+import Scene from './Scene'
 
+export default function Grid() {
     const gridSize = 16
     const smallTileSize = .2
     const bigTileSize = 1
@@ -20,14 +12,8 @@ export default function Grid() {
 
     const rotate90AlongX = new Euler(Math.PI / 2, 0, 0)
 
-    useFrame(() => {
-        gl.autoClear = false
-        gl.clearDepth()
-        gl.render(scene.current, camera)
-    }, 2)
-
     return <>
-        <scene ref={scene}>
+        <Scene>
             <gridHelper args={[gridSize, gridSize / smallTileSize, thickLinesColor, thinLinesColor]}
                         rotation={rotate90AlongX}/>
             <gridHelper args={[gridSize, gridSize / bigTileSize, thickLinesColor, thickLinesColor]}
@@ -44,6 +30,6 @@ export default function Grid() {
                 </bufferGeometry>
                 <PointMaterial transparent color={'#4b8ec5'} size={4} sizeAttenuation={false}/>
             </points>
-        </scene>
+        </Scene>
     </>
 }
